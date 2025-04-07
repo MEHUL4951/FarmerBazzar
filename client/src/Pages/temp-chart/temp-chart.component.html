@@ -1,0 +1,30 @@
+<div class="chart-container" *ngIf="weatherData">
+    <div style="display: flex; width: 220px; height: 220px; margin-bottom: 20px; margin-left: 50px;">
+      <div>
+        <div class="date-info">
+          <p class="wp">Weather's Today</p>
+          <div class="week">{{ currentWeek }}</div>
+          <div class="date">
+            <div>{{ currentDate }},</div>
+            <div style="margin-left: 2px;">{{ currentMonth }}</div>
+          </div>
+        </div>
+        <div class="tempch1">{{ weatherData.main.temp }}°C</div>
+        <p class="tempp1">Hubli</p>
+      </div>
+      <canvas id="doughnut-chart" width="200" height="200"></canvas>
+      <div class="inside">
+        <p class="tempy">{{ weatherData.main.temp }}°C</p>
+        <p style="margin-left: -8px; font-size: 14px; color: #B4B4B8; margin-top: -4px;">Room temp</p>
+      </div>
+    </div>
+    <div class="weather-data">
+      <div style="display: flex; margin-bottom: 20px;">
+        <!-- <mat-icon>water_drop</mat-icon> -->
+        <div class="w">{{ weatherData.rain ? (weatherData.rain['1h'] || weatherData.rain['3h'] || 0) : 0 }} mm</div>
+      </div>
+      <!-- <div class="w1"><mat-icon>water</mat-icon> {{ weatherData.main.pressure }} hPa</div> -->
+      <!-- <div class="w1"><mat-icon>air</mat-icon> {{ weatherData.wind.speed }} m/s</div> -->
+    </div>
+  </div>
+  

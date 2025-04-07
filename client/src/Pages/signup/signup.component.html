@@ -1,0 +1,126 @@
+<div class="signup-container">
+  <div *ngIf="loading" class="loader">
+    <app-pulse-loader [loading]="loading" [color]="'#1b591c'" [size]="20"></app-pulse-loader>
+    Loading..
+</div>
+  <div *ngIf="!loading">
+    <div class="signup-content">
+      <div class="signup-image">
+        <img src="assets/cow2.jpg" alt="signup_Image" class="signup-logo" />
+      </div>
+      <div class="signup-form">
+        <h1 class="signup-title">
+          <b class="title">Sign Up</b>    
+        </h1>  
+        <form [formGroup]="signupForm" (ngSubmit)="handleSignup()">
+          <div class="signup-inputs">
+            <input
+              type="text"
+              class="signup-input"
+              placeholder="First Name"
+              formControlName="firstName"
+            />
+            <div class="signup-error" *ngIf="signupForm.get('firstName')?.touched && signupForm.get('firstName')?.invalid">
+              First Name is required.
+            </div>
+
+            <input
+              type="text"
+              class="signup-input"
+              placeholder="Last Name"
+              formControlName="lastName"
+            />
+            <div class="signup-error" *ngIf="signupForm.get('lastName')?.touched && signupForm.get('lastName')?.invalid">
+              Last Name is required.
+            </div>
+
+            <input
+              type="email"
+              class="signup-input"
+              placeholder="Email"
+              formControlName="email"
+            />
+            <div class="signup-error" *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">
+              Enter a valid email.
+            </div>
+
+            <div class="phone-input-container text-center">
+              <select
+                class="country-code-dropdown"
+              >
+                <option value="-1">+91</option>
+                @for(code of countryCode; track code){
+                  <option >{{code}}</option>
+                }
+              </select>
+              <input
+                type="text"
+                class="signup-input1"
+                placeholder="Enter phone number"
+                formControlName="phoneNumber"
+              />
+            </div>
+            <div class="signup-error" *ngIf="signupForm.get('phoneNumber')?.touched && signupForm.get('phoneNumber')?.invalid">
+              Enter a valid phone number.
+            </div>
+
+            <select
+              class="signup-input"
+              formControlName="state"
+            >
+              <option value="">Select State</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+            <div class="signup-error" *ngIf="signupForm.get('state')?.touched && signupForm.get('state')?.invalid">
+              Please select a state.
+            </div>
+
+            <div class="password-input-container">
+              <input
+                [type]="passwordVisible ? 'text' : 'password'"
+                class="signup-input"
+                placeholder="Password"
+                formControlName="password"
+              />
+            </div>
+            <div class="signup-error" *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">
+              <p>
+                Password must be at least 8 characters long. Password must include at least one uppercase letter (A-Z).Password must include at least one lowercase letter (a-z).Password must include at least one numeric digit (0-9).Password must include at least one special character (!#$%^&*).
+              </p>
+            </div>
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              class="signup-input"
+              placeholder="Confirm Password"
+              formControlName="confirmPassword"
+            />
+            <div class="signup-error" *ngIf="signupForm.get('confirmPassword')?.touched && signupForm.get('confirmPassword')?.hasError('mismatch')">
+              Passwords do not match.
+            </div>
+
+            <div class="show-password">
+              <input
+                type="checkbox"
+                id="showPassword"
+                (change)="passwordVisible = !passwordVisible"
+              />
+              <label class="showpass" for="showPassword">Show Password</label>
+            </div>
+
+            <button type="submit" class="signup-btn" [disabled]="signupForm.invalid">
+              Sign Up
+            </button>
+            <div class="signup-message">
+              <p>
+                Already have an account? Click here to
+                <a [routerLink]="['/login']" class="login">Login</a>
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  
+</div>

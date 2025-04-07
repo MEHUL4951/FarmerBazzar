@@ -1,0 +1,55 @@
+<div class="container my-4">
+  <h2 class="text-center mb-4">Nearby Farming Equipment</h2>
+  <div class="row">
+    <!-- Map Section -->
+    <google-map height="500px" width="100%" [center]="center" [zoom]="zoom">
+      <!-- Loop through each equipment and add a marker -->
+      <map-marker
+      [position]="center"
+      [label]="'📍'"
+      (mapClick)="openInfoWindow(marker)"
+      #marker = "mapMarker"
+    ></map-marker>
+      <map-marker *ngFor="let equipment of equipments"
+        [position]="{ lat: equipment.latitude, lng: equipment.longitude }"
+        (mapClick)="openInfoWindow(marker, equipment)" #marker="mapMarker"></map-marker>
+      <!-- Info window for dynamic equipment details -->
+      <map-info-window #infoWindow>
+        <div style="text-align: center;">
+          <strong>{{ selectedEquipment?.name }}</strong><br />
+          <span> {{selectedEquipment?.address}}</span><br />
+          <span>💰 ₹{{ selectedEquipment?.price_per_day }}/day</span><br />
+          <ng-container *ngIf="selectedEquipment?.availability; else notAvailable">
+            <button class="btn btn-primary btn-sm mt-2" (click)="bookEquipment(selectedEquipment)">Book Now</button>
+          </ng-container>
+          <ng-template #notAvailable>
+            <span style="color: red;">🔴 Not Available</span>
+          </ng-template>
+        </div>
+      
+      </map-info-window>
+    </google-map>
+    <div class="col-md-2">
+      <app-filters (filterChange)="applyFilters($event)"></app-filters>
+    </div>
+
+  </div>
+  <ng-template #bookingModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Book Equipment</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <form class="form-group">
+        <label for="date" class="form-label">Select Date:</label>
+        <input type="date" class="form-control" [(ngModel)]="booking.date" name="date">
+
+        <label for="duration" class="form-label">Duration (days):</label>
+        <input type="number" class="form-control" [(ngModel)]="booking.duration" name="duration" min="1">
+
+        <button type="button" class="btn btn-success mt-3" (click)="confirmBooking(); modal.close()">Confirm
+          Booking</button>
+      </form>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,54 @@
+<div class="login-container">
+  @if(loading){
+  <div class="spinner">
+    <app-pulse-loader [loading]="loading" [color]="'#1b591c'" [size]="20"></app-pulse-loader>
+    <!-- <p>Loading...</p> -->
+  </div>
+  }@else{
+  <div>
+    <div class="login-content">
+      <div class="login-image">
+        <img src="assets/cowfarmer.png" alt="Login_Image" class="login-logo" />
+      </div>
+      <div class="login-form">
+        <h1 class="login-title"><b>Login</b></h1>
+        <p class="welcome">Welcome Back,</p>
+        <form [formGroup]="loginForm" (ngSubmit)="handleLogin()">
+          <div class="login-inputs">
+            <input type="email" placeholder="Email" formControlName="email" class="login-input" />
+            <div class="login-error">{{ emailError }}</div>
+            <div class="password-input">
+              <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password"
+                class="login-input" />
+              <label class="show-password-label">
+                <input type="checkbox" [checked]="showPassword" (change)="toggleShowPassword()" />
+                Show Password
+              </label>
+            </div>
+            <div class="login-error">{{ passwordError }}</div>
+          </div>
+          <div class="login-button">
+            <button type="submit" class="login-btn" [disabled]="loading || !loginForm.valid">
+              Login
+            </button>
+            <div class="signup-message">
+              <p>
+                Don't have an account?
+                <a [routerLink]="['/signup']" class="signup">Sign Up</a>
+              </p>
+              <p class="hr-lines">or</p>
+              <div class="google">
+                <img src="assets/google-icon.png" alt="Google" class="google-icon" />
+                <button type="button" class="google-btn" (click)="handleGoogleSignIn()">
+                  Sign in with Google
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  }
+</div>

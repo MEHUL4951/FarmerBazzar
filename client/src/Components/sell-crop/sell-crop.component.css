@@ -1,0 +1,25 @@
+.card {
+    border-radius: 10px;
+  }
+  
+  .form-label {
+    font-weight: 600;
+  }
+  
+  .form-control, .form-select {
+    border-radius: 8px;
+  }
+  
+  textarea {
+    resize: none;
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+  }
+  
+  .img-thumbnail {
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  

@@ -1,0 +1,27 @@
+<div class="dass">
+
+<app-sidebar [activeSection] = "activeSection" (sectionChange) = "handleSectionChange($event)"></app-sidebar>
+    <!-- <div class="fixed top-0 left-0 w-full h-full bg-black/50 z-40 md:hidden sidebar-overlay"></div> -->
+   
+    <main class="w-full md:w-[calc(100%-300px)] md:ml-60 min-h-screen transition-all main">
+       @if(activeSection == 'croprecommendations'){
+            <app-crop-recommendations></app-crop-recommendations>
+        }@else if(activeSection == 'fertilizer'){
+            <app-fertilizer-recommendations></app-fertilizer-recommendations>
+        }@else if(activeSection == 'news'){
+            <app-news ></app-news>
+        }@else if(activeSection == 'AddEquipment'){
+            <app-add-equipment></app-add-equipment>
+        }@else if(activeSection == 'climate'){
+            <app-climate></app-climate>
+        }@else if(activeSection == 'dashboard'){
+            <app-transaction></app-transaction>
+         }@else if (activeSection == 'profile') {
+            <app-userprofile></app-userprofile>
+        }@else if(activeSection == 'crop-disease-predict'){
+            <app-crop-disease-predictor></app-crop-disease-predictor>
+        }
+    </main>
+
+
+</div>

@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm">
+  <div class="container mx-5">
+    <a class="navbar-brand fw-bold" [routerLink]="['/']">Farmer Bazzar</a>
+    <div class="navbar-collapse" id="navbarNav">
+      <form class="form-inline my-2 my-lg-0 mx-auto w-23" (submit)="searchProducts($event)">
+        <div class="input-group">
+          <input type="text" [(ngModel)]="searchQuery" class="form-control me-2" placeholder="Search products"
+            name="search" required style="background-color: #f8f9fa; color: #495057;" />
+          <button class="btn btn-dark shadow-sm" type="submit">Search</button>
+        </div>
+      </form>
+      <a class="btn fw-bold text-white mx-3 shadow-lg d-flex align-items-center justify-content-center"
+      style="background-color: #FF8C00; font-size: 1.2rem; border-radius: 10px; width: 200px; height: 45px;" 
+      routerLink="/query">
+        Ask AI
+      </a>
+   
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link text-white fw-semibold" routerLink="/find-equipment">Search Equipment</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white fw-semibold" routerLink="/user-manual">User Manual</a>
+        </li>
+        <li class="nav-item dropdown" [class.show]="dropdownOpen">
+          <button class="nav-link text-white fw-semibold dropdown-toggle" id="navbarDropdown" role="button"
+            (click)="toggleDropdown($event)" data-bs-toggle="dropdown" data-bs-auto-close="true">
+            <i class="fa fa-user"></i> My Account
+          </button>
+          <ul class="dropdown-menu shadow-sm" [class.show]="dropdownOpen" aria-labelledby="navbarDropdown">
+            <ng-container *ngIf="isAuthenticated; else notLoggedIn">
+              <li><a class="dropdown-item" routerLink="/dashboard">Dashboard</a></li>
+              <li><a class="dropdown-item" routerLink="/sell-crop">Sell Crop</a></li>
+              <li><button class="dropdown-item" (click)="logout()">Logout</button></li>
+            </ng-container>
+            <ng-template #notLoggedIn>
+              <li><a class="dropdown-item" routerLink="/login">Login</a></li>
+              <li><a class="dropdown-item" routerLink="/signup">Signup</a></li>
+            </ng-template>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

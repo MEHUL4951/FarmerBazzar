@@ -1,0 +1,21 @@
+<div class="container">
+
+     <!-- Windy Weather Map -->
+     <div class="map-container">
+        <iframe [src]="windyUrl" frameborder="0"></iframe>
+      </div>
+    <!-- Side Panel -->
+    <div class="side-panel">
+      <h2>🌦 Weather Features</h2>
+      
+      <!-- List of Weather Features -->
+      <button *ngFor="let feature of features" 
+              (click)="updateMap(feature.overlay)" 
+              [class.active]="feature.overlay === overlay">
+        {{ feature.name }}
+      </button>
+    </div>
+  
+   
+  </div>
+  

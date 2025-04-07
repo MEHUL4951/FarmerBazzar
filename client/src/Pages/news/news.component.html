@@ -1,0 +1,21 @@
+
+<div class="container d-flex justify-content-center align-items-center">
+    <div class="row justify-content-center" style="max-width:600px;">
+      <div *ngFor="let news of indianFarmingNews" class="card shadow p-4 w-100 my-2">
+        <div>
+          <a href="{{news.url}}" class="text-decoration-none">
+            <img src="{{ news.urlToImage }}" class="card-img-top rounded-top" alt="News Image">
+          </a>
+          <div class="card-body">
+            <p class="card-text text-muted">
+              {{ news.description}}
+            </p>
+          </div>
+          <div class="card-footer bg-white border-0 text-end">
+            <a href="{{news.url}}" class="btn btn-primary btn-sm">Read More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+  

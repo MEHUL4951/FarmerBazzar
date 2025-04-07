@@ -1,0 +1,15 @@
+.max-w-4xl {
+    max-width: 70%;
+  }
+  
+  @media (max-width: 768px) {
+    .max-w-4xl {
+      max-width: 100%;
+    }
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  

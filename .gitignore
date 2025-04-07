@@ -1,0 +1,5 @@
+.vscode
+*.log
+/node_modules
+server/CropRecommendation/fertilizer_recommendation.pkl
+server/CropRecommendation/plant_disease_model.h5

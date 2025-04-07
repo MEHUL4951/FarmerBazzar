@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="card animated-card">
+        <h2>Fertilizer Recommendation</h2>
+
+        <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+        <label>Crop Name:</label>
+        <input type="text" [(ngModel)]="cropName" placeholder="Enter Crop Name" required>
+
+        <label>Soil Type:</label>
+        <select [(ngModel)]="soilType" required>
+            <option value="" disabled selected>Select Soil Type</option>
+            <option *ngFor="let soil of soilTypes" [value]="soil">{{ soil }}</option>
+        </select>
+
+        <label>pH Level (0-14):</label>
+        <input type="number" [(ngModel)]="pHLevel" min="0" max="14" placeholder="Enter pH Level" required>
+
+        <label>Climate Condition:</label>
+        <select [(ngModel)]="climateCondition" required>
+            <option value="" disabled selected>Select Climate Condition</option>
+            <option *ngFor="let climate of climateConditions" [value]="climate">{{ climate }}</option>
+        </select>
+
+        <button (click)="getRecommendation()" [disabled]="isLoading">
+            {{ isLoading ? 'Processing...' : 'Get Recommendation' }}
+        </button>
+
+        <h3 *ngIf="recommendedFertilizer" class="animated-fertilizer">
+            Recommended Fertilizer: {{ recommendedFertilizer }}
+        </h3>
+    </div>
+</div>

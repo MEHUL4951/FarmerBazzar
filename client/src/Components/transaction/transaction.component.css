@@ -1,0 +1,30 @@
+.sold-products-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 320px; /* Slightly wider for better layout */
+  max-height: 400px; /* Keeps dropdown scrollable */
+  overflow-y: auto;
+  background: linear-gradient(to right, #4CAF50, #2E7D32); /* Green gradient */
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 50;
+  color: white;
+}
+
+.sold-product-item {
+  background-color: rgba(255, 255, 255, 0.15); /* Slight transparency */
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.sold-product-item:hover {
+  background-color: rgba(255, 255, 255, 0.3); /* Brighter on hover */
+}
+
+.sold-product-meta {
+  font-size: 12px;
+  color: #f1f1f1;
+}

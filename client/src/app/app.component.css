@@ -1,0 +1,16 @@
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  .App {
+    
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 1900px;
+    margin: 0rem auto;
+  }
+
+  
+  
+  

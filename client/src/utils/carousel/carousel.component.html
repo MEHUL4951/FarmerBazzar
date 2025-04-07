@@ -1,0 +1,36 @@
+<!-- carousel.component.html -->
+<div  class="carousel slide p-4 ">
+    <ol class="carousel-indicators">
+      <li
+        *ngFor="let banner of banners; let i = index"
+        (click)="currentIndex = i"
+        [class.active]="isActive(i)"
+      ></li>
+    </ol>
+    <div class="carousel-inner rounded-4">
+      <div
+        *ngFor="let banner of banners; let i = index"
+        class="carousel-item"
+        [class.active]="isActive(i)"
+      >
+        <img [src]="banner.img" class="d-block w-100" alt="Slide {{ i + 1 }}">
+      </div>
+    </div>
+    <button
+      class="carousel-control-prev"
+      role="button"
+      (click)="goToPrevious()"
+    >
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button
+      class="carousel-control-next"
+      role="button"
+      (click)="goToNext()"
+    >
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  

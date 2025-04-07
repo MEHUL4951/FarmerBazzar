@@ -1,0 +1,80 @@
+<div  class="container d-flex justify-content-center align-items-center vh-100">
+<div class="card shadow p-4 w-100" style="max-width: 600px;">
+  
+      <div class="d-flex align-items-center">
+        <div class="position-relative d-inline-block">
+          <!-- Profile Image -->
+          <img [src]="profileImageUrl || defaultAvatar" alt="User Avatar" class="rounded-circle profile-img"
+               style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;"
+               (click)="triggerFileInput()">
+        
+          <!-- Camera Icon (Trigger File Input) -->
+          <i class="bi bi-camera-fill position-absolute bottom-0 end-0 bg-white p-1 rounded-circle shadow"
+             style="cursor: pointer; font-size: 13px;"
+             (click)="triggerFileInput()"></i>
+        
+          <!-- Hidden File Input -->
+          <input type="file" #fileInput class="d-none"
+          accept="image/*" (change)="onFileSelected($event)">
+        </div>
+        
+     
+        <div class="ms-3">
+          <h4>{{ user?.firstName || 'User' }}</h4>
+          <p class="text-muted">{{ user?.email }}</p>
+        </div>
+      </div>
+  
+      <hr>
+  
+      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+        <!-- First Name -->
+        <div class="mb-3">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-control" formControlName="firstName" placeholder="Enter First Name">
+          <div *ngIf="profileForm.get('firstName')?.touched && profileForm.get('firstName')?.invalid" class="text-danger">
+            <small *ngIf="profileForm.get('firstName')?.errors?.['required']">First Name is required.</small>
+            <small *ngIf="profileForm.get('firstName')?.errors?.['minlength']">Must be at least 3 characters.</small>
+          </div>
+        </div>
+      
+        <!-- Last Name -->
+        <div class="mb-3">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-control" formControlName="lastName" placeholder="Enter Last Name">
+          <div *ngIf="profileForm.get('lastName')?.touched && profileForm.get('lastName')?.invalid" class="text-danger">
+            <small *ngIf="profileForm.get('lastName')?.errors?.['required']">Last Name is required.</small>
+            <small *ngIf="profileForm.get('lastName')?.errors?.['minlength']">Must be at least 3 characters.</small>
+          </div>
+        </div>
+      
+        <!-- Phone Number -->
+        <div class="mb-3">
+          <label class="form-label">Phone Number</label>
+          <input type="text" class="form-control" formControlName="phoneNumber" placeholder="Enter Phone Number">
+          <div *ngIf="profileForm.get('phoneNumber')?.touched && profileForm.get('phoneNumber')?.invalid" class="text-danger">
+            <small *ngIf="profileForm.get('phoneNumber')?.errors?.['required']">Phone Number is required.</small>
+            <small *ngIf="profileForm.get('phoneNumber')?.errors?.['pattern']">Enter a valid 10-digit Indian phone number.</small>
+          </div>
+        </div>
+      
+        <!-- State -->
+        <div class="mb-3">
+          <label class="form-label">State</label>
+          <select class="form-control" formControlName="state">
+            <option value="">Select State</option>
+            <option *ngFor="let s of states" [value]="s" [selected]="s === profileForm.get('state')?.value">
+              {{ s }}
+            </option>
+          </select>
+          <div *ngIf="profileForm.get('state')?.touched && profileForm.get('state')?.invalid" class="text-danger">
+            <small>State is required.</small>
+          </div>
+        </div>
+      
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary w-100" [disabled]="profileForm.invalid">Update Profile</button>
+      </form>
+
+  </div>
+</div>

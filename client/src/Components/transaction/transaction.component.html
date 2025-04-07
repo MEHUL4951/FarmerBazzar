@@ -1,0 +1,58 @@
+<div class="dass">
+  <main class="w-full md:w-[calc(100%-300px)] md:ml-60 min-h-screen transition-all main p-6">
+
+    <!-- Pending Products -->
+    <button (click)="toggleDropdown()"
+      class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded flex justify-between items-center">
+      <span>Sale Pending Products</span>
+      <span [class]="isDropdownOpen ? 'rotate-0' : 'rotate-180'">▼</span>
+    </button>
+
+    <div *ngIf="isDropdownOpen" class="mt-2 border p-4 rounded-lg bg-white shadow-md">
+      <div *ngIf="pendingProducts.length > 0; else noPendingProducts">
+        <div class="row">
+          <div *ngFor="let product of pendingProducts" class="col-md-4 cursor-pointer mt-3">
+            <app-crop-card [product]="product" [routerLink]="['/crops', product.productId]"></app-crop-card>
+            <!-- Mark as Sold Button (Prevents Navigation) -->
+
+            <button *ngIf="product.sellerId === userId" (click)="markAsSold(product.productId)"
+              [disabled]="product.isSold"
+              class=" bg-green-600 hover:bg-red-700 text-white py-2 px-4 rounded transition-all"
+              style="width: 84%;">
+              {{ product.isSold ? "Marked as Sold" : "Mark as Sold" }}
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noPendingProducts>
+      <p class="text-gray-500">No products for sale yet.</p>
+    </ng-template>
+
+    <!-- Sold Products -->
+    <button (click)="toggleSoldDropdown()"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded flex justify-between items-center mt-6">
+      <span>Sold Products</span>
+      <span [class]="isSoldDropdownOpen ? 'rotate-0' : 'rotate-180'">▼</span>
+    </button>
+
+    <div *ngIf="isSoldDropdownOpen" class="mt-2 border p-4 rounded-lg bg-white shadow-md">
+      <div *ngIf="soldProducts.length > 0; else noSoldProducts">
+            <div class="row">
+              <div *ngFor="let product of soldProducts" class="col-md-4 cursor-pointer">
+                <app-crop-card [product]="product" [routerLink]="['/crops', product.productId]"></app-crop-card>
+              </div>
+            </div>
+         
+       
+    </div>
+</div>
+
+<ng-template #noSoldProducts>
+  <p class="text-gray-500">No products marked as sold yet.</p>
+</ng-template>
+
+</main>
+</div>

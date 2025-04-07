@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="card animated-card">
+        <h2>Crop Disease Predictor</h2>
+
+        <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+        <label>Upload Crop Image: ["JPG" , "PNG","JPEG"]</label>
+        <input type="file"  placeholder="Enter Crop image" required (change) = "onFileSelected($event)"
+        />
+       
+            <img *ngIf="selectedImage" [src]="selectedImage" class="img-thumbnail" style="max-width: 200px;" />
+        
+
+    
+        <button (click)="getRecommendation()" [disabled]="isLoading">
+            {{ isLoading ? 'Processing...' : 'Predict Disease' }}
+        </button> 
+
+        <div *ngIf="predictionResult" class="animated-fertilizer" style="color: #4CAF50; font-size: 24px; margin-top: 20px;">
+            <h3>Predicted Disease: {{ predictionResult }}</h3>
+            <p>
+                Confidence Score: {{ confidence }}%
+
+            </p>
+          
+        </div>
+    </div>
+</div>

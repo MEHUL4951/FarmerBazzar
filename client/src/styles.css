@@ -1,0 +1,44 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+  
+.toast-message {
+    &.toast-success {
+      border-left: 3px solid #22c55e;
+    }
+  
+    &.toast-error {
+      border-left: 3px solid #ef7777;
+    }
+  
+    &.toast-info {
+      border-left: 3px solid #3b82f6;
+    }
+  
+    &.toast-warning {
+      border-left: 3px solid #f59e0b;
+    }
+  }
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+    background-color:#fff;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Reem Kufi", sans-serif!important ;
+  }
+
+  .hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hover-effect:hover {
+    transform: translateY(-5px); /* Moves card slightly up */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Adds a smooth shadow */
+  }
+  
+  

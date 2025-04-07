@@ -1,0 +1,100 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="crop-recommendation-container card shadow p-4 w-100" style="max-width: 600px;">
+    <h1 class="text-center mb-4">Crop Recommendation System</h1>
+    <div class="form-and-result-container">
+      <form [formGroup]="cropForm" (ngSubmit)="handleSubmit($event)">
+        <div class="mb-3">
+          <label class="form-label">Soil pH:</label>
+          <input 
+            class="form-control" 
+            type="number" 
+            formControlName="ph" 
+            required 
+          />
+          <div *ngIf="formControls['ph'].invalid && formControls['ph'].touched" class="text-danger small mt-1">
+            <p *ngIf="formControls['ph'].errors?.['required']">Soil pH is required.</p>
+            <p *ngIf="formControls['ph'].errors?.['min']">Soil pH must be between 0 and 14.</p>
+            <p *ngIf="formControls['ph'].errors?.['max']">Soil pH must be between 0 and 14.</p>
+          </div>
+        </div>
+
+        
+
+        <div class="mb-3">
+          <label class="form-label">Temperature:</label>
+          <input 
+            class="form-control" 
+            type="number" 
+            formControlName="temperature" 
+            required 
+          />
+          <div *ngIf="formControls['temperature'].invalid && formControls['temperature'].touched" class="text-danger small mt-1">
+            <p *ngIf="formControls['temperature'].errors?.['required']">Temperature is required.</p>
+            <p *ngIf="formControls['temperature'].errors?.['min']">Temperature must be between -50 and 60°C.</p>
+            <p *ngIf="formControls['temperature'].errors?.['max']">Temperature must be between -50 and 60°C.</p>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Rainfall:</label>
+          <input 
+            class="form-control" 
+            type="number" 
+            formControlName="rainfall" 
+            required 
+          />
+          <div *ngIf="formControls['rainfall'].invalid && formControls['rainfall'].touched" class="text-danger small mt-1">
+            <p *ngIf="formControls['rainfall'].errors?.['required']">Rainfall is required.</p>
+            <p *ngIf="formControls['rainfall'].errors?.['min']">Rainfall must be between 0 and 500 mm.</p>
+            <p *ngIf="formControls['rainfall'].errors?.['max']">Rainfall must be between 0 and 500 mm.</p>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Humidity:</label>
+          <input 
+            class="form-control" 
+            type="number" 
+            formControlName="humidity" 
+            required 
+          />
+          <div *ngIf="formControls['humidity'].invalid && formControls['humidity'].touched" class="text-danger small mt-1">
+            <p *ngIf="formControls['humidity'].errors?.['required']">Humidity is required.</p>
+            <p *ngIf="formControls['humidity'].errors?.['min']">Humidity must be between 0 and 100%.</p>
+            <p *ngIf="formControls['humidity'].errors?.['max']">Humidity must be between 0 and 100%.</p>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button 
+            class="btn btn-primary mx-2" 
+            type="submit" 
+            [disabled]="loading || cropForm.invalid">
+            Get Recommendation
+          </button>
+          <button 
+            class="btn btn-secondary" 
+            type="button" 
+            (click)="handleClear()">
+            Clear
+          </button>
+        </div>
+      </form>
+
+      <div class="result-container mt-4">
+        <h2 class="text-center" *ngIf="recommendedCrop">Recommended Crop: {{ recommendedCrop }}</h2>
+        <div class="text-center">
+          <img 
+            [src]="cropImage" 
+            [alt]="recommendedCrop || 'placeholder'" 
+            class="img-fluid mt-3" 
+            style="max-height: 250px;"
+          />
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center mt-3" *ngIf="loading">Loading...</p>
+    <p class="text-center text-danger" *ngIf="error">{{ error }}</p>
+  </div>
+</div>

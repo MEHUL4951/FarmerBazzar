@@ -1,0 +1,53 @@
+.crop-recommendation-container {
+  margin-left: 100px;
+  border-radius: 10px;
+  padding: 30px;
+  box-sizing: border-box;
+
+}
+/* Result styles */
+.result-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.result-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-and-result-container {
+  display: flex;
+  justify-content: space-between; /* Aligns items with space between them */
+}
+
+.result-container {
+  width: 45%; /* Adjust as needed */
+}
+
+/* Style for the crop image */
+.crop-image {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+  border-radius: 8px;
+  margin-left: 5px;
+  margin-top: 30px;
+}
+/* Style for the error message */
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+
+
+
+.confetti-container {
+  position: absolute;
+  top: 0;
+  right: 600px;
+  width: 30px; /* Adjust as necessary */
+  height: 100px; /* Adjust as necessary */
+}

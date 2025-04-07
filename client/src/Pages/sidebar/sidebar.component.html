@@ -1,0 +1,65 @@
+<div class="fixed left-0 top-0 w-67 h-full bg-gray-900 px-2 z-50 sidebar-menu transition-transform"
+style="max-width: 270px;">
+  <a class="navbar-brand fw-bold text-white p-2" [routerLink]="['/']">Home</a>
+  <ul class="mt-2 text-white">
+
+    <li [class.active]="activeSection === 'dashboard'" (click)="handleSectionChange('dashboard')">
+      <i class="bi bi-grid icon"></i>
+      <span>Dashboard</span>
+    </li>
+
+    <p class="p2">Services</p>
+    <hr class="divider" />
+
+    <li [class.active]="activeSection === 'climate'" (click)="handleSectionChange('climate')">
+      <i class="bi bi-cloud icon"></i>
+      <span>Climate</span>
+    </li>
+
+    <li [class.active]="activeSection === 'croprecommendations'" (click)="handleSectionChange('croprecommendations')">
+      <i class="bi bi-tree icon"></i>
+      <span>Crop Recommendations</span>
+    </li>
+
+    <li [class.active]="activeSection === 'fertilizer'" (click)="handleSectionChange('fertilizer')">
+      <i class="bi bi-tree icon"></i>
+      <span>Fertilizer Recommendations</span>
+    </li>
+    <li [class.active]="activeSection === 'crop-disease-predict'" (click)="handleSectionChange('crop-disease-predict')">
+      <i class="bi bi-tree icon"></i>
+      <span>Crop Disease Predictor</span>
+    </li>
+    
+
+
+    <li [class.active]="activeSection === 'news'" (click)="handleSectionChange('news')">
+      <i class="bi bi-newspaper icon"></i>
+      <span>News</span>
+    </li>
+
+    <li [class.active]="activeSection === 'AddEquipment'" (click)="handleSectionChange('AddEquipment')">
+      <i class="bi bi-tools icon"></i>
+      <span>Add Equipment</span>
+    </li>
+    
+
+    <hr class="divider" />
+    <li *ngIf="ismanual"  [class.active]="activeSection === 'profile'" (click)="handleSectionChange('profile')">
+      <div class="d-flex align-items-center">
+        <!-- Profile Image -->
+        <img [src]="profileImageUrl || defaultAvatar" alt="User Avatar" class="rounded-circle profile-img"
+          style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;">
+
+        <div class="ms-3 mt-3">
+          <h4 >{{ user?.firstName || 'User' }} {{user?.lastName}}</h4>
+        </div>
+      </div>
+    </li>
+
+
+    <li (click)="logout()">
+      <i class="bi bi-box-arrow-right icon"></i>
+      <span>Logout</span>
+    </li>
+  </ul>
+</div>

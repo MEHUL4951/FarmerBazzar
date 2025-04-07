@@ -1,0 +1,154 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100 my-4">
+  <div class="card w-100" style="max-width: 600px;">
+    <div class="card-header bg-success text-white text-center">
+      <h3 class="mb-0">🌾 Sell Your Crop</h3>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="sellCropForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        
+        <!-- Crop Name -->
+        <div class="mb-3">
+          <label for="productName" class="form-label fw-bold">🌱 Crop Name</label>
+          <input 
+            type="text" 
+            id="productName" 
+            class="form-control" 
+            placeholder="Enter crop name" 
+            formControlName="productName"     
+          />
+          <div *ngIf="sellCropForm.get('productName')?.touched && sellCropForm.get('productName')?.invalid" class="text-danger small">
+            Crop Name is required.
+          </div>
+        </div>
+
+        <!-- Crop Image Upload -->
+        <div class="mb-3">
+          <label for="productImage" class="form-label fw-bold">📸 Upload Image</label>
+          <input 
+            type="file" 
+            id="productImage" 
+            class="form-control" 
+            (change)="onFileChange($event)" 
+            accept="image/*"
+          />
+          <div class="mt-2 text-center">
+            <img *ngIf="img" [src]="img" class="img-thumbnail" style="max-width: 150px;" />
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div class="mb-3">
+          <label for="productPrice" class="form-label fw-bold">💰 Crop Price (₹)</label>
+          <input 
+            type="number" 
+            id="productPrice" 
+            class="form-control" 
+            placeholder="Enter crop price" 
+            formControlName="productPrice" 
+          />
+        </div>
+
+        <!-- Quantity & Unit -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="productQuantity" class="form-label fw-bold">📦 Quantity</label>
+            <input 
+              type="number" 
+              id="productQuantity" 
+              class="form-control" 
+              placeholder="Enter quantity" 
+              formControlName="productQuantity" 
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="quantityUnit" class="form-label fw-bold">⚖️ Unit</label>
+            <select id="quantityUnit" class="form-select" formControlName="quantityUnit">
+              <option value="kg">Kilograms (kg)</option>
+              <option value="ton">Tons (ton)</option>
+              <option value="quintal">Quintals</option>
+              <option value="grams">Grams</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label for="productDescription" class="form-label fw-bold">Crop Description</label>
+          <textarea 
+            id="productDescription" 
+            class="form-control" 
+            placeholder="Enter crop details" 
+            formControlName="productDescription">
+          </textarea>
+        </div>
+
+        <!-- Category -->
+        <div class="mb-3">
+          <label for="productCategory" class="form-label fw-bold">🌿 Crop Category</label>
+          <select id="productCategory" class="form-select" formControlName="productCategory">
+            <option value="" disabled selected>Choose category</option>
+            <option value="Fruits">Fruits</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Grains">Grains</option>
+            <option value="Pulses">Pulses</option>
+          </select>
+        </div>
+
+        <!-- Select Location -->
+        <div class="mb-3 mt-3">
+          <label class="form-label">📍 Select Location</label>
+          <app-map [latitude]="latitude" [longitude]="longitude" [isDraggable]="true" (locationChanged)="updateLocation($event)" [popupContent]="'<p>Select Your Farm Location Drag the marker to adjust the location</p>'">
+          </app-map>
+        </div>
+
+        <!-- Mobile Number (New Field) -->
+        <div class="mb-3">
+          <label for="sellerMobile" class="form-label fw-bold">📞 Mobile Number</label>
+          <input 
+            type="text" 
+            id="sellerMobile" 
+            class="form-control" 
+            placeholder="Enter your mobile number" 
+            formControlName="sellerMobile"
+            maxlength="10"
+          />
+          <div *ngIf="sellCropForm.get('sellerMobile')?.touched && sellCropForm.get('sellerMobile')?.invalid" class="text-danger small">
+            <div *ngIf="sellCropForm.get('sellerMobile')?.errors?.['required']">Mobile Number is required.</div>
+            <div *ngIf="sellCropForm.get('sellerMobile')?.errors?.['pattern']">Enter a valid 10-digit mobile number.</div>
+          </div>
+        </div>
+
+        <!-- Seller Address -->
+        <div class="mb-3">
+          <label for="sellerAddress" class="form-label fw-bold">🏠 Seller Address</label>
+          <textarea 
+            id="sellerAddress" 
+            class="form-control" 
+            placeholder="Enter your address" 
+            formControlName="sellerAddress">
+          </textarea>
+        </div>
+
+        <!-- Available From -->
+        <div class="mb-3">
+          <label for="availableFrom" class="form-label fw-bold">📅 Available From</label>
+          <input 
+            type="date" 
+            id="availableFrom" 
+            class="form-control" 
+            formControlName="availableFrom" 
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-success w-100" [disabled]="sellCropForm.invalid">
+            Sell Crop
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+    <h1 class="text-3xl font-bold text-center mb-4">AI Query Assistant</h1>
+  
+    <!-- User Input Form -->
+    <div class="flex space-x-2 mb-4">
+      <input 
+        type="text" 
+        class="flex-grow p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        [(ngModel)]="userQuery"
+        placeholder="Ask a question..."
+        [disabled]="isLoading"
+      />
+      <button 
+        (click)="onSubmit()" 
+        class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
+        [disabled]="isLoading">
+        <span *ngIf="isLoading" class="flex items-center">
+          <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="4" fill="none"></circle>
+          </svg>
+          Generating...
+        </span>
+        <span *ngIf="!isLoading">Submit Query</span>
+      </button>
+    </div>
+  
+    <!-- AI Response Display -->
+    <div *ngIf="aiResponse" class="border p-4 rounded-lg bg-gray-100 shadow-md">
+      <h3 class="text-xl font-semibold mb-2">AI Response</h3>
+      <div class="text-gray-900" [innerHTML]="aiResponse"></div>
+    </div>
+  
+    <!-- Chat History -->
+    <div *ngIf="chatHistory.length" class="mt-6">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-2xl font-bold">Chat History</h2>
+        <button (click)="clearHistory()" class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700">
+          Clear History
+        </button>
+      </div>
+  
+      <div *ngFor="let chat of chatHistory" class="border-b py-2">
+        <p class="text-blue-600 font-semibold">You: {{ chat.query }}</p>
+        <div class="text-gray-900" [innerHTML]="chat.response"></div>
+      </div>
+    </div>
+  </div>
+  

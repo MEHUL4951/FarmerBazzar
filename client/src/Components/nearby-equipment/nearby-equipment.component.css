@@ -1,0 +1,14 @@
+
+  #map1 {
+    height: 100%;
+  }
+  
+  .list-group-item {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .list-group-item:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.02);
+  }
+  
