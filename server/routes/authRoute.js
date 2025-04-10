@@ -11,7 +11,10 @@ router.get('/logout',verifyToken , authContrtoller.logout)
 router.get('/me',verifyToken,authContrtoller.getMe)
 router.get('/getAll',authContrtoller.getAllUsers)
 router.get('/GetUser/:uid',authContrtoller.GetUserById)
-router.put("/update",verifyToken,authContrtoller.UpdateUser)
+router.put('/update',verifyToken,authContrtoller.UpdateUser)
+router.post('/save-fcm-token', verifyToken, authContrtoller.saveFcmToken);
+router.post('/subscribe',authContrtoller.savetopicToken)
+router.post('/firebase-login',authContrtoller.firebaseLogin);
 
 export default router
  

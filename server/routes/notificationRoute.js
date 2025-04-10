@@ -16,5 +16,7 @@ router.delete('/deleteNotification/:userId',verifyToken,notification.markAllasRe
 //Delete Single Notification
 router.delete('/delete/:notificationId',verifyToken,notification.deleteSingleNotification)
 
+router.post('/test-fcm', notification.sendTestNotification);
+
 
 export default router

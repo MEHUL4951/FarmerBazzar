@@ -1,15 +1,5 @@
-<div class="container mx-auto flex justify-center items-center mt-8">
-    <div class="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
-        <!-- Left Side: Map & Location -->
-        <div class="border rounded-lg p-4 bg-gray-100 shadow">
-            <!-- <h5 class="text-lg font-semibold">📍 Equipment Location</h5> -->
-            <!-- <p class="mt-2"><strong>Latitude:</strong> {{ equipment.latitude }}</p> -->
-            <!-- <p><strong>Longitude:</strong> {{  }}</p> -->
-            <p><strong>Address:</strong> {{ equipmentForm.get('address')?.value}}</p>
-            <div id="map" class="h-48 mt-3 rounded-md shadow"></div>
-            <p class="text-sm text-gray-500 mt-2">🖱 Drag the marker to update location.</p>
-        </div>
-
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class=" p-4 w-100" style="max-width: 600px;">
         <!-- Right Side: Form -->
         <div class="border rounded-lg p-4 bg-white shadow">
             <h5 class="text-lg font-semibold">🛠 Add New Equipment</h5>
@@ -25,14 +15,22 @@
                         </div>
                     }
                     <label class="block font-medium">Equipment Type</label>
-                    <input type="text" class="w-full px-3 py-2 border rounded-md focus:outline-blue-500" 
-                        placeholder="Enter type (e.g., Tractor, Harvester)" 
-                        formControlName="type">
-                    @if(equipmentForm.get('type')?.touched && equipmentForm.get('type')?.invalid){
+                    <select formControlName="type" class="w-full px-3 py-2 border rounded-md focus:outline-blue-500">
+                        <option value="" disabled selected>Select Equipment Type</option>
+                        <option value="Tractor">🚜 Tractor</option>
+                        <option value="Harvester">🌾 Harvester</option>
+                        <option value="Plough">🔧 Plough</option>
+                        <option value="Sprayer">💨 Sprayer</option>
+                        <option value="Seeder">🌱 Seeder</option>
+                        <option value="Baler">📦 Baler</option>
+                        <option value="Cultivator">🧹 Cultivator</option>
+                      </select>
+                      
+                      @if(equipmentForm.get('type')?.touched && equipmentForm.get('type')?.invalid){
                         <div class="text-red-500 text-sm">
-                            Equipment Type is required.
+                          Equipment Type is required.
                         </div>
-                    }
+                      }
               
               
                     <label class="block font-medium">Equipment Price (price/day)</label>

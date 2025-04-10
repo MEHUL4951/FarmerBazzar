@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import * as L from 'leaflet';
+
 import { EquipmentService } from '../../Services/equipment.service';
 import { FiltersComponent } from '../filters/filters.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -7,12 +7,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
+
+import { darkMapStyle } from '../../utils/mapstyle';
 declare var Razorpay: any;
 @Component({
   selector: 'app-nearby-equipment',
   standalone: true,
   imports: [FiltersComponent, CommonModule, FormsModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+   
   ],
   templateUrl: './nearby-equipment.component.html',
   styleUrl: './nearby-equipment.component.css'
@@ -20,20 +23,40 @@ declare var Razorpay: any;
 
 export class NearbyEquipmentComponent implements OnInit {
   @ViewChild('bookingModal') bookingModal: any;
-  userLatitude: number = 22.22;
-  userLongitude: number = 70.23
-  center: google.maps.LatLngLiteral = { lat:22.462464 , lng: 70.0514304 }; // Example: Gir Somnath
+  @ViewChild(MapInfoWindow) userInfoWindow!: MapInfoWindow; 
+
+
+  userLocationIcon: google.maps.Icon = {
+    url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    scaledSize: new google.maps.Size(40, 40)
+  };
+
+
+  openUserInfoWindow(marker: MapMarker) {
+    if (this.userInfoWindow) {
+      this.userInfoWindow.open(marker);
+    } else {
+      console.warn('userInfoWindow not available yet');
+    }
+  }
+  
+
+  center: google.maps.LatLngLiteral = { lat: 22.462464, lng: 70.0514304 }; // Example: Gir Somnath
+  userLocation: google.maps.LatLngLiteral | null = null;
+
+
+  options: google.maps.MapOptions = {
+    styles: darkMapStyle,
+    disableDefaultUI: false,
+    zoomControl: true
+  };
   zoom = 12;
   equipments: any = [];
   selectedEquipment: any = null;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
-  booking = {
-    equipmentId: '',
-    date: '',
-    duration: 1
-  };
+  duration:any
   filters: any
-  
+
 
   constructor(
     // private geolocationService: GeolocationService,
@@ -44,31 +67,43 @@ export class NearbyEquipmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCurrentLocation();
-   
+    this.getAllEquipments();
+
+  }
+  getAllEquipments(): void {
+
+    this.equipmentService.getAllEquipments().subscribe({
+
+      next: (res) => {
+        this.equipments = res?.data || []
+
+      },
+      error: (err) => {
+
+      },
+      complete: () => {
+
+      }
+    })
+
   }
 
-  private getCurrentLocation(): Promise<google.maps.LatLngLiteral> {
-    return new Promise((resolve, reject) => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            resolve({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            });
-            console.log(position.coords.latitude, position.coords.longitude);
-          },
-          (error) => reject(error),
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-          }
-        );
-      } else {
-        reject('Geolocation not supported.');
-      }
-    });
+  getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        this.userLocation = coords;
+        this.center = coords; // center the map to user location
+        this.zoom = 14; // optionally zoom in
+      }, (error) => {
+        console.error("Geolocation error:", error);
+      });
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
   }
 
 
@@ -76,10 +111,10 @@ export class NearbyEquipmentComponent implements OnInit {
     this.selectedEquipment = equipment;
     this.infoWindow.open(marker);
   }
-   
+
 
   private loadNearbyEquipment(): void {
-    this.equipmentService.getNearbyEquipment(this.userLatitude, this.userLongitude, this.filters?.maxKM).subscribe({
+    this.equipmentService.getNearbyEquipment(this.userLocation, this.filters?.maxKM).subscribe({
       next: (response) => {
         this.equipments = response?.data || [];
       },
@@ -97,13 +132,12 @@ export class NearbyEquipmentComponent implements OnInit {
   }
   confirmBooking() {
     const data = {
-      amount: this.selectedEquipment.price_per_day,
+      amount: this.selectedEquipment.price_per_day * this.duration,
       currency: 'INR',
     }
 
     this.equipmentService.createOrder(data).subscribe({
       next: (res) => {
-        console.log(res);
         const order = res;
         const options = {
           key: 'rzp_test_b4fI7CTGW150PQ',
@@ -114,6 +148,7 @@ export class NearbyEquipmentComponent implements OnInit {
           order_id: order.id,
           handler: (response: any) => {
             this.verifyPayment(response);
+            // this.saveBooking()
           },
           prefill: {
             name: 'Shivam',
@@ -149,19 +184,20 @@ export class NearbyEquipmentComponent implements OnInit {
     const booking = {
       equipmentId: this.selectedEquipment.id,
       date: new Date(),
-      duration: this.booking.duration
+      duration: this.duration,
+      status: 'active'
     };
     this.equipmentService.saveBooking(booking).subscribe({
       next: (response) => {
-        this.loadNearbyEquipment();
-        console.log('Booking saved:', response);
+        this.getAllEquipments();
+        // console.log('Booking saved:', response);
       },
       error: (error) => {
-        console.error('Error saving booking:', error);
+        // console.error('Error saving booking:', error);
       }
     });
-  
- 
+
+
   }
 
 }

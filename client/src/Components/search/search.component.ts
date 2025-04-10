@@ -28,10 +28,12 @@ export class SearchComponent {
         next:(data) =>
         {
           this.products = data?.products || [];
+          this.loading = false;
         },
         error:(error) =>
         {
           console.log(error);
+          this.loading = false
         },
         complete:() =>
         {

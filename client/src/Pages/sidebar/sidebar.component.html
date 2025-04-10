@@ -44,7 +44,7 @@ style="max-width: 270px;">
     
 
     <hr class="divider" />
-    <li *ngIf="ismanual"  [class.active]="activeSection === 'profile'" (click)="handleSectionChange('profile')">
+    <li   [class.active]="activeSection === 'profile'" (click)="handleSectionChange('profile')">
       <div class="d-flex align-items-center">
         <!-- Profile Image -->
         <img [src]="profileImageUrl || defaultAvatar" alt="User Avatar" class="rounded-circle profile-img"

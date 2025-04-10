@@ -5,6 +5,7 @@ import { EquipmentService } from '../../Services/equipment.service';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-add-equipment',
@@ -22,7 +23,8 @@ export class AddEquipmentComponent implements OnInit {
   coordinates: { latitude: number; longitude: number } | null = null;
 
   constructor(private equipmentService: EquipmentService,private fb:FormBuilder,
-    private http:HttpClient
+    private http:HttpClient,
+    private snackBar:MatSnackBar,
   ) {
     this.equipmentForm = this.fb.group({
       name : ['',Validators.required],
@@ -40,8 +42,18 @@ export class AddEquipmentComponent implements OnInit {
       next: () => {
         const data = this.equipmentForm.value;
         this.equipmentService.addEquipment(data).subscribe({
-          next: (res) => console.log('Equipment added:', res),
-          error: (err) => console.error('Add failed:', err),
+          next: (res) =>{ this.snackBar.open('✅ Equipment added successfully!', 'Close', {
+            duration: 4000,
+            
+            panelClass: ['snackbar-success']
+          });},
+
+          error: (err) => {
+            this.snackBar.open('❌ Failed to add equipment!', 'Close', {
+              duration: 4000,
+              panelClass: ['snackbar-error']
+            });
+          },
         });
       },
       error: (err) => {

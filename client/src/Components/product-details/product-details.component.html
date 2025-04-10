@@ -20,7 +20,7 @@
           <span class="text-danger fw-bold">Product is Sold</span>
         </ng-template>
       </h3>
-      
+
       <table class="table table-bordered">
         <tbody>
           <tr>
@@ -69,9 +69,24 @@
 
         </tbody>
       </table>
-      <app-map [latitude]="product?.sellerLatitude
-      " [longitude]="product?.sellerLongitude" [isDraggable]="false">
-      </app-map>
+      <div class="my-3">
+        <google-map height="280px" width="100%" [center]="center" [zoom]="15" [options]="mapOptions">
+          <map-marker
+         
+          [position]="markerPosition"
+          (mapClick)="openInfoWindow(marker)" 
+          #marker="mapMarker"
+          >
+          </map-marker>
+          <map-info-window #infoWindow>
+            <div>
+              <strong>   {{ product?.productName }}</strong><br />
+              📍{{ product?.sellerAddress }}
+            </div>
+          </map-info-window>
+        </google-map>
+      </div>
+
     </div>
 
     <!-- Reviews -->
@@ -142,20 +157,20 @@
   <!-- Related Products -->
   <h3 class="mt-4 mb-3 border-bottom pb-1">Related Products</h3>
   @if(related.length > 0){
-    <div class="row">
-      @for(crop of related ; track crop.productId){
+  <div class="row">
+    @for(crop of related ; track crop.productId){
 
-          <div class="col-lg-3 col-sm-4 mb-4 cursor-pointer" [routerLink]="['/crops', crop.productId]">
-            <app-crop-card [product]="crop"></app-crop-card>
-          </div>
-
-      }
+    <div class="col-lg-3 col-sm-4 mb-4 cursor-pointer" [routerLink]="['/crops', crop.productId]">
+      <app-crop-card [product]="crop"></app-crop-card>
     </div>
+
+    }
+  </div>
   }@else{
-    <div class="alert alert-info" role="alert">
-      No related products found.
-    </div>
+  <div class="alert alert-info" role="alert">
+    No related products found.
+  </div>
   }
- 
+
   }
 </main>

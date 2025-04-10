@@ -134,5 +134,33 @@ class Notification{
                  res.status(500).send("Error Fetching Notification "+err.message)
                }
       }
+
+      static async sendTestNotification(req, res) {
+        try {
+          const { fcmToken } = req.body;
+      
+          if (!fcmToken) {
+            return res.status(400).json({ error: 'FCM token is required' });
+          }
+      
+          await admin.messaging().send({
+            token: fcmToken,
+            notification: {
+              title: '🔔 Test Notification',
+              body: 'This is a test notification from the backend.',
+            },
+            data: {
+              type: 'test',
+              testId: '123',
+            },
+          });
+      
+          return res.status(200).json({ message: 'Test notification sent successfully' });
+        } catch (error) {
+          console.error('sendTestNotification error:', error);
+          return res.status(500).json({ error: 'Failed to send notification' });
+        }
+      }
+      
 }
 export default Notification

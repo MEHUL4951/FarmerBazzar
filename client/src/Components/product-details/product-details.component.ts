@@ -6,21 +6,34 @@ import { AuthService } from '../../Services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CropCardComponent } from '../crop-card/crop-card.component';
 import { PulseLoaderComponent } from '../../utils/pulse-loader/pulse-loader.component';
-import { MapComponent } from '../../utils/map/map.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Auth, authState } from '@angular/fire/auth';
+import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
+
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
   imports: [CommonModule, FormsModule,RouterLink,CropCardComponent,PulseLoaderComponent,
-  MapComponent
+    GoogleMapsModule
+  
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css'
 })
 
 export class ProductDetailsComponent {
+  @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
+  center!: google.maps.LatLngLiteral;
+  markerPosition!: google.maps.LatLngLiteral;
+  mapOptions: google.maps.MapOptions = {
+    mapTypeId: 'roadmap',
+    zoomControl: true,
+    scrollwheel: true,
+    disableDoubleClickZoom: false,
+    maxZoom: 18,
+    minZoom: 5,
+  };
   constructor(private route: ActivatedRoute, private cropService: CropService, private router: Router
     ,    private modalService: NgbModal,
     private authService : AuthService,
@@ -54,7 +67,6 @@ export class ProductDetailsComponent {
   ngOnInit(): void {
     this.isAuthenticated = false;
     authState(this.auth).subscribe(user => {
-      console.log(user)
       this.isAuthenticated = !!user;
     });
     const id = this.route.snapshot.paramMap.get('id');
@@ -79,6 +91,21 @@ export class ProductDetailsComponent {
         this.reviews = this.product?.reviews || [];
         this.sellerMobile = product.data.sellerMobile
         this.fetchRelatedProducts(this.product?.productCategory);
+        if (
+          this.product?.sellerLatitude &&
+          this.product?.sellerLongitude &&
+          !isNaN(this.product.sellerLatitude) &&
+          !isNaN(this.product.sellerLongitude)
+        ) {
+          this.center = {
+            lat: Number(this.product.sellerLatitude),
+            lng: Number(this.product.sellerLongitude),
+          };
+      
+          this.markerPosition = { ...this.center };
+        } else {
+          console.error('Invalid or missing coordinates:', this.product);
+        }
       },
       error: (err) => {
         //  this.toast.danger(err.error.error);
@@ -131,6 +158,10 @@ export class ProductDetailsComponent {
       const whatsappUrl = `https://web.whatsapp.com/send?phone=${this.sellerMobile}`;
       window.open(whatsappUrl, '_blank');
     }
+  }
+ 
+  openInfoWindow(marker: MapMarker,) {
+    this.infoWindow.open(marker);
   }
 
 }

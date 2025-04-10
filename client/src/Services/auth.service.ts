@@ -30,8 +30,8 @@ export class AuthService {
       })
     );
   }
-  
-  
+
+
 
   Login(user: any): Observable<any> {
     return this.http.post(`${this.url}/login`, user).pipe(
@@ -43,7 +43,7 @@ export class AuthService {
       })
     );
   }
-  
+
 
   // Request OTP
   RequestOTP(email: any): Observable<any> {
@@ -55,7 +55,7 @@ export class AuthService {
     return this.http.post(`${this.url}/signup/verify-and-complete`, user);
   }
 
-  
+
 
   // Sign in with Google
   async loginWithGoogle(): Promise<any> {
@@ -86,10 +86,10 @@ export class AuthService {
         return this.getAuthToken().pipe(
           switchMap(token => {
             const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-            return this.http.get(`${this.url}/logout`,{headers});
+            return this.http.get(`${this.url}/logout`, { headers });
           })
         );
-        
+
       }
     } catch (error) {
       console.error('Error during logout:', error);
@@ -117,10 +117,34 @@ export class AuthService {
         return this.http.put(`${this.url}/update`, data, { headers })
       })
     );
-       
+
   }
-  singInWithFirebaseCustomtoken(token:string){
-    return signInWithCustomToken(this.auth,token)
+  singInWithFirebaseCustomtoken(token: string) {
+    return signInWithCustomToken(this.auth, token)
+  }
+
+  savefcmToken(fcmtoken: string): Observable<any> {
+    return this.getAuthToken().pipe(
+      switchMap(token => {
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.post(`${this.url}/save-fcm-token`, { fcmtoken }, { headers });
+      })
+    );
+  }
+  subscribeToTopic(fcmToken: string, topic: string): Observable<any> {
+    return this.getAuthToken().pipe(
+      switchMap(token => {
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.post(`${this.url}/subscribe`, {
+          fcmToken,
+          topic
+        }, { headers });
+      })
+    );
+  }
+
+  verifyFirebaseUser(idToken:any):Observable<any>{
+     return this.http.post(`${this.url}/firebase-login`,{idToken})
   }
 
 }

@@ -71,6 +71,7 @@ export class CropRecommendationsComponent {
             this.cropImage = './assets/croprec.avif';
 
         }
+        this.loading = false;
       },
       error: (error) => {
         this.error = 'Error fetching recommendation. Please try again.';

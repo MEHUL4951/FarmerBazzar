@@ -51,8 +51,6 @@ export class UserprofileComponent implements OnInit {
       ...this.profileForm.value,
       profileImage:this.profileImageUrl
     }
-
-    console.log(data)
     this.authService.updateUser(this.profileForm.value).subscribe({
         next:(res)=>{
           this.toast.success(res.message);

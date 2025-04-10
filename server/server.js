@@ -1,7 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import authRoute from './routes/authRoute.js'
-import predictRoute from './routes/predictRoute.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import firebase from 'firebase/compat/app'
@@ -11,12 +10,33 @@ import equipmentRoute from './routes/equipmentRoute.js'
 import notificationRoute from './routes/notificationRoute.js'
 import { v2 as cloudinary } from 'cloudinary'
 import Razorpay from 'razorpay';
+import { createClient } from 'redis';
+// import { checkBookingExpiry } from './controllers/EquipmentController.js';
 const app = express()
 dotenv.config()
+
+
 const port = process.env.PORT || '3000'
 export const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET
+});
+
+
+
+export const redisClient = createClient({
+      socket: {
+            host: '127.0.0.1',
+            port: 6379
+      }
+});
+
+redisClient.connect();
+redisClient.on('error', (err) => {
+      console.error('Redis Client Error', err);
+});
+redisClient.on('connect', () => {
+      console.log('Connected to Redis');
 });
 
 cloudinary.config({
@@ -41,7 +61,6 @@ const firebaseconfig = {
 };
 
 app.use("/api/v1/auth/", authRoute)
-app.use("/api/v1/predict/", predictRoute)
 app.use("/api/v1/crop/", productRoute)
 app.use("/api/v1/notification/", notificationRoute)
 app.use("/api/v1/equipment/", equipmentRoute)

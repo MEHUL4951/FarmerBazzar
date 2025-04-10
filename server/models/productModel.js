@@ -249,7 +249,7 @@ static async getAllProducts() {
         .map(doc =>({
           productId: doc.id,
           ...doc.data(),
-        })).filter(product => product.productName.toLowerCase() === lowercasedName);
+        })).filter(product => product?.productName?.toLowerCase() === lowercasedName);
   
       return products.length ? products : null;
     } catch (err) {

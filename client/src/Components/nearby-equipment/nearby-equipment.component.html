@@ -2,18 +2,14 @@
   <h2 class="text-center mb-4">Nearby Farming Equipment</h2>
   <div class="row">
     <!-- Map Section -->
-    <google-map height="500px" width="100%" [center]="center" [zoom]="zoom">
-      <!-- Loop through each equipment and add a marker -->
-      <map-marker
-      [position]="center"
-      [label]="'📍'"
-      (mapClick)="openInfoWindow(marker)"
-      #marker = "mapMarker"
-    ></map-marker>
+    <google-map height="500px" width="100%" [center]="center" [zoom]="zoom" [options]="options">
+      <map-marker *ngIf="userLocation" [position]="userLocation" [icon]="userLocationIcon"
+        (mapClick)="openUserInfoWindow(userMarker)" #userMarker="mapMarker">
+      </map-marker>
       <map-marker *ngFor="let equipment of equipments"
         [position]="{ lat: equipment.latitude, lng: equipment.longitude }"
         (mapClick)="openInfoWindow(marker, equipment)" #marker="mapMarker"></map-marker>
-      <!-- Info window for dynamic equipment details -->
+
       <map-info-window #infoWindow>
         <div style="text-align: center;">
           <strong>{{ selectedEquipment?.name }}</strong><br />
@@ -26,9 +22,14 @@
             <span style="color: red;">🔴 Not Available</span>
           </ng-template>
         </div>
-      
+
+      </map-info-window>
+
+      <map-info-window #userInfoWindow>
+        <strong>📍 You are here</strong>
       </map-info-window>
     </google-map>
+
     <div class="col-md-2">
       <app-filters (filterChange)="applyFilters($event)"></app-filters>
     </div>
@@ -41,11 +42,8 @@
     </div>
     <div class="modal-body">
       <form class="form-group">
-        <label for="date" class="form-label">Select Date:</label>
-        <input type="date" class="form-control" [(ngModel)]="booking.date" name="date">
-
         <label for="duration" class="form-label">Duration (days):</label>
-        <input type="number" class="form-control" [(ngModel)]="booking.duration" name="duration" min="1">
+        <input type="number" class="form-control" [(ngModel)]="duration" name="duration" min="1">
 
         <button type="button" class="btn btn-success mt-3" (click)="confirmBooking(); modal.close()">Confirm
           Booking</button>

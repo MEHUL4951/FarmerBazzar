@@ -1,11 +1,11 @@
-
-import Product from '../models/productModel.js'
+import Product from '../models/productModel.js';
 import { v4 as uuidv4 } from 'uuid';
-import { v2 as cloudinary } from 'cloudinary'
+import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 
+import { getCache, setCache, deleteCache } from '../utils/redisCache.js';
 import admin from '../firebase.js';
-const db = admin.firestore()
+const db = admin.firestore();
 
 dotenv.config();
 
@@ -48,21 +48,35 @@ class ProductController {
         sellerLatitude,
         sellerLongitude,
         sellerId,
-
       });
       const createResult = await product.createProduct();
-
+      await deleteCache('all_products');
+      await deleteCache(`products_seller_${sellerId}`);
+      const usersRef = await db.collection('users').get();
+      const tokens = usersRef.docs.map(doc => doc.data().fcmToken).filter(token => !!token)
+      let multicastMessages = {}
+      if (tokens.length > 0) {
+        multicastMessages = {
+          tokens,
+          notification: {
+            title: '🌾 New Product Added!',
+            body: `${productName} is available at ₹${productPrice} per ${quantityUnit}.`,
+          },
+          data: {
+            productId: pid,
+            type: 'new_product'
+          }
+        }
+      }
       if (createResult.success) {
-        return res
-          .status(201)
-          .json({
-            message: "Product is Created Successfully..",
-            success: true,
-          });
-      } else {
-        return res
-          .status(500)
-          .json({ error: "Error saving Product to Firestore", success: false });
+        await admin.messaging().sendEachForMulticast(multicastMessages)
+        return res.status(201).json({
+          message: "Product is Created Successfully..",
+          success: true,
+        });
+      }
+      else {
+        return res.status(500).json({ error: "Error saving Product to Firestore", success: false });
       }
     } catch (error) {
       console.error("Add Product Error:", error.message);
@@ -70,70 +84,109 @@ class ProductController {
     }
   };
 
-
   static MarkProductAsSold = async (req, res) => {
     try {
-        const { productId } = req.params;
-        // Reference to the product document
-        const productRef = db.collection('products').doc(productId);
-        // Check if the product exists
-        const productDoc = await productRef.get();
-        if (!productDoc.exists) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-        // Update the isSold field to true instead of deleting
-        await productRef.update({ isSold: true });
-        res.json({ message: 'Product marked as sold successfully' });
+      const { productId } = req.params;
+      const productRef = db.collection('products').doc(productId);
+
+      const productDoc = await productRef.get();
+      const productData = productDoc.data();
+      const sellerId = productData.sellerId;
+      const userDoc = await db.collection('users').doc(sellerId).get()
+      const sellerfcmToken = userDoc.data().fcmToken;
+      if (!productDoc.exists) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      await productRef.update({ isSold: true });
+
+      if (sellerfcmToken) {
+        await admin.messaging().send({
+          token: sellerfcmToken,
+          notification: {
+            title: 'Product Sold',
+            body: `Your product "${productData.productName}" has been marked as sold.`,
+          },
+          data: {
+            productId: productId,
+            type: 'product_sold'
+          }
+        })
+      }
+      await deleteCache('all_products');
+      await deleteCache(`products_seller_${sellerId}`);
+      res.json({ message: 'Product marked as sold successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error marking product as sold', error });
+      res.status(500).json({ message: 'Error marking product as sold', error });
     }
-};
+  };
 
   static getProductById = async (req, res) => {
     const { pid } = req.params;
-    const product = await Product.getProductById(pid);
-    return res.status(200).json({
-      product,
-    });
+    const cacheKey = `product_${pid}`;
+    let product = await getCache(cacheKey);
+
+    if (!product) {
+      product = await Product.getProductById(pid);
+      await setCache(cacheKey, product, 7200);
+    }
+    return res.status(200).json({ product });
   };
+
   static getAllproducts = async (req, res) => {
-    const products = await Product.getAllProducts();
-    return res.status(200).json({ products });
+    try {
+      const cached = await getCache('all_products');
+      if (cached) return res.status(200).json({ products: cached });
+
+      const products = await Product.getAllProducts();
+      await setCache('all_products', products, 43200);
+      res.status(200).json({ products });
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      res.status(500).json({ error: 'Failed to fetch products' });
+    }
   };
 
   static getProductByCategory = async (req, res) => {
     const { category } = req.params;
-    const products = await Product.getProductByCategory(category);
-    return res.status(200).json({
-      products,
-    });
+    const cacheKey = `products_category_${category}`;
+    let products = await getCache(cacheKey);
+    if (!products) {
+      products = await Product.getProductByCategory(category);
+      await setCache(cacheKey, products, 3600);
+    }
+    return res.status(200).json({ products });
   };
+
   static getProductByName = async (req, res) => {
     const { productName } = req.params;
-    const products = await Product.getProductByName(productName);
-    return res.status(200).json({
-      products,
-    });
+    const cacheKey = `products_name_${productName}`;
+    let products = await getCache(cacheKey);
+    if (!products) {
+      products = await Product.getProductByName(productName);
+      await setCache(cacheKey, products, 3600);
+    }
+    return res.status(200).json({ products });
   };
 
   static GetProductBySellerID = async (req, res) => {
     const { sellerId } = req.params;
-
-    const products = await Product.getProductsBySellerId(sellerId);
-    return res.status(200).json({
-      products,
-    });
+    const cacheKey = `products_seller_${sellerId}`;
+    let products = await getCache(cacheKey);
+    if (!products) {
+      products = await Product.getProductsBySellerId(sellerId);
+      await setCache(cacheKey, products, 3600);
+    }
+    return res.status(200).json({ products });
   };
+
   static addReview = async (req, res) => {
     const { pid } = req.params;
     const { review, rating } = req.body;
     const userId = req?.user?.uid;
     const data = await Product.addReview(pid, review, rating, userId);
-    return res.status(200).json({
-      data,
-    });
+    await deleteCache(`product_${pid}`);
+    return res.status(200).json({ data });
   };
-
-  
 }
+
 export default ProductController;

@@ -8,27 +8,23 @@ from tensorflow.keras.models import load_model
 from sklearn.preprocessing import LabelEncoder
 from flask_cors import CORS
 
-
-
-
 app = Flask(__name__)
 CORS(app)
 
 class_indices = json.load(open('class_indices.json'))
 crop_disease_model = load_model('plant_disease_model.h5')
+
 # Load Model & Label Encoders
 with open("fertilizer_recommendation.pkl", "rb") as model_file:
     fertilizer_model = pickle.load(model_file)
 
-# with open("label_encoders.pkl", "rb") as enc_file:
-#     label_encoders = pickle.load(enc_file)
-
-
+with open("label_encoders.pkl", "rb") as enc_file:
+    label_encoders = pickle.load(enc_file)
 
 
 # Load the trained Random Forest model
-# with open('crop_recommendation_rf.pkl', 'rb') as file:
-#     model = pickle.load(file)
+with open('crop_recommendation_rf.pkl', 'rb') as file:
+    crop_model = pickle.load(file)
 
 
 
@@ -37,33 +33,33 @@ with open("fertilizer_recommendation.pkl", "rb") as model_file:
 
 # Load Label Encoder (if needed)
 
-# le = LabelEncoder()
-# le.classes_ = np.load('label_classes.npy', allow_pickle=True)  # Assuming you saved classes
+le = LabelEncoder()
+le.classes_ = np.load('label_classes.npy', allow_pickle=True)  # Assuming you saved classes
 
 # Endpoint to make predictions
-# @app.route('/predict', methods=['POST'])
-# def predict_crop():
-#     try:
-#         data = request.json
-#         temperature = data.get('temperature')
-#         humidity = data.get('humidity')
-#         ph = data.get('ph')
-#         rainfall = data.get('rainfall')
+@app.route('/recommend', methods=['POST'])
+def predict_crop():
+    try:
+        data = request.json
+        temperature = data.get('temperature')
+        humidity = data.get('humidity')
+        ph = data.get('ph')
+        rainfall = data.get('rainfall')
 
-#         # Check if all parameters are present
-#         if None in [temperature, humidity, ph, rainfall]:
-#             return jsonify({'error': 'Missing required parameters'}), 400
+        # Check if all parameters are present
+        if None in [temperature, humidity, ph, rainfall]:
+            return jsonify({'error': 'Missing required parameters'}), 400
 
-#         input_data = np.array([[temperature, humidity, ph, rainfall]])
+        input_data = np.array([[temperature, humidity, ph, rainfall]])
         
-#         # Make prediction
-#         prediction = model.predict(input_data)
-#         recommended_crop = le.inverse_transform(prediction)
+        # Make prediction
+        prediction = crop_model.predict(input_data)
+        recommended_crop = le.inverse_transform(prediction)
 
-#         return jsonify({'crop': recommended_crop[0]})
+        return jsonify({'crop': recommended_crop[0]})
     
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
     
 
 # # Predict Fertilizeer

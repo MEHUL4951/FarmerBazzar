@@ -69,9 +69,8 @@ export class TransactionComponent {
   markAsSold(productId: string) {
     if (!this.userId) return;
 
-    this.productService.MarkProductAsSold(productId).subscribe(
-      () => {
-        // Find the product in pendingProducts and move it to soldProducts
+    this.productService.MarkProductAsSold(productId).subscribe({
+      next:(res)=>{
         const productIndex = this.pendingProducts.findIndex(p => p.productId === productId);
         if (productIndex > -1) {
           const product = this.pendingProducts[productIndex];
@@ -81,10 +80,15 @@ export class TransactionComponent {
           this.soldProducts.unshift(product);
           this.pendingProducts.splice(productIndex, 1);
         }
+
       },
-      (error) => {
-        console.error('Error marking product as sold:', error);
+      error:(err)=>{
+
+        console.error('Error marking product as sold:', err);
+
       }
+    }
+  
     );
   }
 }

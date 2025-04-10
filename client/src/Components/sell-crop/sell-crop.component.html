@@ -96,12 +96,7 @@
         </div>
 
         <!-- Select Location -->
-        <div class="mb-3 mt-3">
-          <label class="form-label">📍 Select Location</label>
-          <app-map [latitude]="latitude" [longitude]="longitude" [isDraggable]="true" (locationChanged)="updateLocation($event)" [popupContent]="'<p>Select Your Farm Location Drag the marker to adjust the location</p>'">
-          </app-map>
-        </div>
-
+      
         <!-- Mobile Number (New Field) -->
         <div class="mb-3">
           <label for="sellerMobile" class="form-label fw-bold">📞 Mobile Number</label>
@@ -143,7 +138,7 @@
 
         <!-- Submit Button -->
         <div class="text-center">
-          <button type="submit" class="btn btn-success w-100" [disabled]="sellCropForm.invalid">
+          <button type="submit" class="btn btn-success w-100" >
             Sell Crop
           </button>
         </div>
