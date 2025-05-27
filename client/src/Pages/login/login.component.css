@@ -198,3 +198,78 @@ body {
   color: #0056b3;
   text-decoration: underline;
 }
+
+/* Responsive Design for Mobile Devices */
+@media screen and (max-width: 768px) {
+  .signup-container,
+  .login-container {
+    height: auto;
+    padding: 20px;
+  }
+
+  .signup-content,
+  .login-content {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+  }
+
+  .signup-image,
+  .login-image {
+    display: none; /* Hide image on mobile for simplicity */
+  }
+
+  .signup-form,
+  .login-form {
+    padding: 15px;
+    width: 100%;
+  }
+
+  .signup-input,
+  .signup-input1,
+  .country-code-dropdown,
+  .login-input,
+  .signup-btn,
+  .login-btn,
+  .google,
+  .google-btn {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .signup-error,
+  .login-error,
+  .show-password-label {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+
+  .signup-message,
+  .hr-lines {
+    margin-left: 0 !important;
+    text-align: center;
+  }
+
+  .google-icon {
+    left: 10px;
+    top: 5px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .google-btn {
+    padding-left: 40px; /* Make space for icon */
+  }
+
+  .title,
+  .login-title {
+    font-size: 24px;
+  }
+
+  .welcome {
+    margin-left: 0;
+    font-size: 18px;
+    text-align: center;
+  }
+}

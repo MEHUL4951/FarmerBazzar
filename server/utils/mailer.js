@@ -19,12 +19,13 @@ const transporter = nodemailer.createTransport({
   });
 
 // Function to send email
-const sendMail = async (to, subject, text) => {
+const sendMail = async (to, subject, options) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to,
     subject,
-    text,
+    ...(options.text && { text: options.text }),   // Include plain text if provided
+    ...(options.html && { html: options.html })    // Include HTML if provided
   };
 
   return new Promise((resolve, reject) => {

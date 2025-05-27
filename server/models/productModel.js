@@ -156,8 +156,15 @@ class Product {
         sellerLatitude: this.sellerLatitude,
         sellerLongitude: this.sellerLongitude,
         sellerId: this.sellerId,
+        soldQuantity : 0,
+        buyerIds: [],
+        buyerName: [],
+        buyerEmails: [],
         createdAt:  new Date().toISOString(),
-        isSold : false
+        isSold : false,
+        buyerVerificationToken: null,
+        emailSentAt : null,
+        isVerifiedByBuyer : false
       });
       return { success: true};
     } catch (err) {

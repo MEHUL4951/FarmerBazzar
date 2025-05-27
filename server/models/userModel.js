@@ -1,66 +1,3 @@
-// import admin from '../firebase.js'
-// const db = admin.firestore();
-
-// const userCollection = db.collection("users")
-//  const createUser = async (userData)=>{
-//            try{
-//             const {uid,firstName,lastName,email,phoneNumber, state} = userData
-//               await userCollection.doc(uid).set({
-//                    firstName,
-//                    lastName,
-//                    email,
-//                    phoneNumber,
-//                    state,
-//                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-//                 });
-//                 return {success : true};
-//            }
-//            catch(error){
-//               console.log("Error Creating user:",error);
-//               return {success:false,error};
-//            }
-//       }
-
-      
-//       const getUserByUID = async (uid) => {
-//         try {
-//           const usersCollection = admin.firestore().collection('users'); // Make sure 'users' is your collection name
-//           const userDoc = await usersCollection.doc(uid).get();
-      
-//           if (!userDoc.exists) {
-//             return null; // User not found
-//           }
-      
-//           return userDoc.data(); // Return user data
-//         } catch (error) {
-//           console.error("Error fetching user:", error.message);
-//           throw new Error('Failed to fetch user from Firestore');
-//         }
-//       }
-
-//       const getAllUsers = async () => {
-//         try {
-//             const usersCollection = admin.firestore().collection('users'); // Make sure 'users' is your collection name
-//             const snapshot = await usersCollection.get(); // Get all documents from 'users' collection
-    
-//             if (snapshot.empty) {
-//                 return []; // No users found
-//             }
-    
-//             const users = snapshot.docs.map(doc => {
-//                 return { uid: doc.id, ...doc.data() }; // Include user ID and data
-//             });
-  
-//             return users;
-//         } catch (error) {
-//             console.error("Error fetching users:", error.message);
-//             throw new Error('Failed to fetch users from Firestore');
-//         }
-//     }
-    
-
-// export {createUser,getUserByUID,getAllUsers}
-
 
 import admin from '../firebase.js';
 const db = admin.firestore()
@@ -84,6 +21,8 @@ class UserModel {
         email: this.email,
         phoneNumber: this.phoneNumber,
         state: this.state,
+        purchasedProducts: [],
+        soldProducts: [],
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       };
   

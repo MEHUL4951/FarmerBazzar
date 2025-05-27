@@ -57,6 +57,4 @@ export const routes: Routes = [
         path:'user-manual',
         component:UserManualComponent
     }
-
-
 ];

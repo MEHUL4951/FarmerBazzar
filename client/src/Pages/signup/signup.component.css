@@ -2,15 +2,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  padding: 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .signup-content {
   background-color: #f8f9fa;
   border-radius: 10px;
-  width: 1000px;
-  height: 620px; 
   display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 1000px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .signup-image {
@@ -21,15 +26,16 @@
 }
 
 .signup-logo {
-  width: 900px;
-  height: 620px;
-  border-radius: 10px;
-  object-position: 40% 60%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  object-position: 40% 60%;
 }
 
-.title{
-  font-size: 20px;
+.signup-form {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .signup-title {
@@ -37,113 +43,100 @@
   margin-bottom: 15px;
 }
 
-.signup-form {
-  flex: 1;
-    padding: 20px;
-}
-
 .signup-inputs {
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-input::placeholder{
-  color: #343a40;
-}
-.signup-input {
-  margin-left: 45px;
-  width: 400px;
+
+.signup-input,
+.signup-input1,
+.country-code-dropdown,
+.signup-btn {
+  width: 100%;
+  max-width: 400px;
   padding: 10px;
-  margin-bottom: 10px;
   color: #343a40;
   border: 1px solid #ced4da;
   border-radius: 5px;
+  margin: 0 auto;
+  display: block;
 }
 
-.signup-input1 {
-  
-  width: 335px;
-  padding: 10px;
-  margin-bottom: 4px;
-  color: #343a40;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-}
-.showpass{
-  margin-left: 0px;
-  margin-top: 2px;
-  margin-bottom: 5px;
+.phone-input-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
+.signup-error {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+}
 
 .show-password {
   display: flex;
   align-items: center;
-  margin-top: 2px;
-  margin-bottom: 3px;
+  justify-content: center;
 }
 
-.show-password input {
-  margin-left: 45px;
-  margin-right: 7px;
-  margin-bottom: 4px;
+.show-password label {
+  margin-left: 5px;
+}
+
+.signup-message {
+  text-align: center;
+  margin-top: 10px;
 }
 
 .signup-btn {
-  width: 400px;
-  padding: 10px;
   background-color: #343a40;
   color: white;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
-  margin-left: 45px;
+  transition: 0.3s;
 }
 
 .signup-btn:hover {
   opacity: 0.9;
 }
 
-.signup-error {
-  color: red;
-  margin-bottom: 10px;
-  margin-left: 56px;
-  font-size: 15px;
+/* Responsive Layout */
+@media screen and (max-width: 768px) {
+  .signup-content {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .signup-logo {
+    height: 200px;
+    border-radius: 0;
+  }
+
+  .signup-form {
+    padding: 10px;
+  }
+
+  .signup-input,
+  .signup-input1,
+  .signup-btn,
+  .country-code-dropdown {
+    max-width: 100%;
+  }
+
+  .phone-input-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
-.registration-success {
-  color: green;
-  font-size: 18px;
-  margin-bottom: 20px;
-  text-align: center;
-}
+@media screen and (max-width: 480px) {
+  .signup-title .title {
+    font-size: 18px;
+  }
 
-.login{
-  color: #0056b3;
-  text-decoration: underline;
-}
-
-.signup-message{
-  margin-left: 50px;
-}
-
-/* .country-code-select {
-  width: 150px; 
-}*/
-
-.country-flag-icon {
-  padding: 20px;
-  width: 20px; /* Adjust size as needed */
-  margin-right: 5px; /* Add spacing between flag and code */
-}
-.phone-input-container {
-  display: flex;
-}
-
-.country-code-dropdown{
-  width: 68.4px;
-  padding: 10px;
-  margin-bottom: 4px;
-  color:#343a40;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-  margin-left: 42px;
+  .signup-logo {
+    height: 150px;
+  }
 }

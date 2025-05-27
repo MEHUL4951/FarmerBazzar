@@ -13,6 +13,8 @@ router.post('/AddReview/:pid', verifyToken,ProductController.addReview)
 router.get('/GetProductBySellerId/:sellerId',ProductController.GetProductBySellerID)
 router.delete('/delete/:productId',verifyToken,ProductController.MarkProductAsSold)
 router.post("/query",verifyToken,QueryController.handleQuery)
+router.post("/VerifyPurchase",verifyToken,ProductController.verifyPurchase)
+router.get("/verifySale", ProductController.VerifySale);
 
 export default router
  

@@ -53,8 +53,7 @@ export class CropDiseasePredictorComponent {
     this.predictService.predictCropDisease(formdata).subscribe({
       next: (res) => {
         this.predictionResult = res.predicted_class
-        this.confidence = res.confidence
-          ;
+        this.confidence = res.confidence;     
         this.isLoading = false;
         // this.selectedImage = null; // Clear the image after prediction
       },

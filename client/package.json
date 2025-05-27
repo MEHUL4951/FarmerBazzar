@@ -33,6 +33,7 @@
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "firebase": "^11.1.0",
+    "leaflet": "^1.9.4",
     "ng-angular-popup": "^0.6.6",
     "ngx-markdown": "^18.1.0",
     "overpass-frontend": "^3.3.2",

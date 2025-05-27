@@ -84,4 +84,36 @@ export class CropService {
       })
     );
   }
+
+  SendVerificationEmail(data: {
+  productId: string;
+  buyerName: string;
+  buyerEmail: string;
+  buyerPhone: string;
+  sellingPrice: string;
+  sellingDate: string;
+  quantitySold: string;
+}) {
+  const body = {
+    productId: data.productId,
+    buyerName: data.buyerName,
+    buyerEmail: data.buyerEmail,
+    buyerPhone: data.buyerPhone,
+    sellingPrice: data.sellingPrice,
+    sellingDate: data.sellingDate,
+    quantitySold: data.quantitySold
+  };
+
+  // Get the authentication token
+  return this.authService.getAuthToken().pipe(
+    switchMap((token: string) => {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      
+      // Sending the POST request with the Authorization header
+      return this.http.post<any>(`${this.url}/VerifyPurchase`, body, { headers });
+    })
+  );
+}
+
+
 }

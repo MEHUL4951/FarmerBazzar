@@ -1,5 +1,7 @@
 <div class="dass">
-  <main class="w-full md:w-[calc(100%-300px)] md:ml-60 min-h-screen transition-all main p-6">
+  <!-- Main content area -->
+  <main [class.blur]="showFormForProductId"
+    class="w-full md:w-[calc(100%-300px)] md:ml-60 min-h-screen transition-all main p-6">
 
     <!-- Pending Products -->
     <button (click)="toggleDropdown()"
@@ -7,28 +9,44 @@
       <span>Sale Pending Products</span>
       <span [class]="isDropdownOpen ? 'rotate-0' : 'rotate-180'">▼</span>
     </button>
-
     <div *ngIf="isDropdownOpen" class="mt-2 border p-4 rounded-lg bg-white shadow-md">
       <div *ngIf="pendingProducts.length > 0; else noPendingProducts">
         <div class="row">
           <div *ngFor="let product of pendingProducts" class="col-md-4 cursor-pointer mt-3">
             <app-crop-card [product]="product" [routerLink]="['/crops', product.productId]"></app-crop-card>
-            <!-- Mark as Sold Button (Prevents Navigation) -->
-
-            <button *ngIf="product.sellerId === userId" (click)="markAsSold(product.productId)"
-              [disabled]="product.isSold"
-              class=" bg-green-600 hover:bg-red-700 text-white py-2 px-4 rounded transition-all"
-              style="width: 84%;">
-              {{ product.isSold ? "Marked as Sold" : "Mark as Sold" }}
+            <button *ngIf="product.sellerId === userId && !product.isSold" (click)="openSoldForm(product.productId)"
+              class="bg-green-600 hover:bg-red-700 text-white py-2 px-4 rounded transition-all mt-2 w-full">
+              Mark as Sold
             </button>
-
           </div>
         </div>
       </div>
     </div>
-
     <ng-template #noPendingProducts>
       <p class="text-gray-500">No products for sale yet.</p>
+    </ng-template>
+
+    <!-- Partially Sold Products -->
+    <button (click)="togglePartialDropdown()"
+      class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded flex justify-between items-center mt-6">
+      <span>Partially Sold Products</span>
+      <span [class]="isPartialDropdownOpen ? 'rotate-0' : 'rotate-180'">▼</span>
+    </button>
+    <div *ngIf="isPartialDropdownOpen" class="mt-2 border p-4 rounded-lg bg-white shadow-md">
+      <div *ngIf="partialSoldProducts.length > 0; else noPartiallySoldProducts">
+        <div class="row">
+          <div *ngFor="let product of partialSoldProducts" class="col-md-4 cursor-pointer">
+            <app-crop-card [product]="product" [routerLink]="['/crops', product.productId]"></app-crop-card>
+            <button *ngIf="product.sellerId === userId && !product.isSold" (click)="openSoldForm(product.productId)"
+              class="bg-green-600 hover:bg-red-700 text-white py-2 px-4 rounded transition-all mt-2 w-full">
+              Mark as Sold
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noPartiallySoldProducts>
+      <p class="text-gray-500">No partially sold products yet.</p>
     </ng-template>
 
     <!-- Sold Products -->
@@ -37,22 +55,82 @@
       <span>Sold Products</span>
       <span [class]="isSoldDropdownOpen ? 'rotate-0' : 'rotate-180'">▼</span>
     </button>
-
     <div *ngIf="isSoldDropdownOpen" class="mt-2 border p-4 rounded-lg bg-white shadow-md">
       <div *ngIf="soldProducts.length > 0; else noSoldProducts">
-            <div class="row">
-              <div *ngFor="let product of soldProducts" class="col-md-4 cursor-pointer">
-                <app-crop-card [product]="product" [routerLink]="['/crops', product.productId]"></app-crop-card>
-              </div>
-            </div>
-         
-       
+        <div class="row">
+          <div *ngFor="let product of soldProducts" class="col-md-4 cursor-pointer">
+            <app-crop-card [product]="product" [routerLink]="['/crops', product.productId]"></app-crop-card>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+    <ng-template #noSoldProducts>
+      <p class="text-gray-500">No products marked as sold yet.</p>
+    </ng-template>
 
-<ng-template #noSoldProducts>
-  <p class="text-gray-500">No products marked as sold yet.</p>
-</ng-template>
+    <!-- Bought Products -->
+    <button (click)="toggleBoughtDropdown()"
+      class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded flex justify-between items-center mt-6">
+      <span>Bought Products</span>
+      <span [class]="isBoughtDropdownOpen ? 'rotate-0' : 'rotate-180'">▼</span>
+    </button>
+    <div *ngIf="isBoughtDropdownOpen" class="mt-2 border p-4 rounded-lg bg-white shadow-md">
+      <div *ngIf="boughtProducts.length > 0; else noBoughtProducts">
+        <div class="row">
+          <div *ngFor="let product of boughtProducts" class="col-md-4 cursor-pointer mt-3">
+            <app-crop-card [product]="product" [routerLink]="['/crops', product.productId]"></app-crop-card>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noBoughtProducts>
+      <p class="text-gray-500">No bought products yet.</p>
+    </ng-template>
 
-</main>
+  </main>
+
+  <!-- Modal Sold Form -->
+  <div *ngIf="showFormForProductId" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] md:w-[400px] relative z-50">
+      <form (ngSubmit)="submitSoldForm()" class="space-y-4">
+        <div>
+          <label for="buyerName" class="block text-sm font-medium text-gray-700">Buyer Name</label>
+          <input id="buyerName" type="text" [(ngModel)]="soldForm.buyerName" name="buyerName" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label for="buyerEmail" class="block text-sm font-medium text-gray-700">Buyer Email</label>
+          <input id="buyerEmail" type="email" [(ngModel)]="soldForm.buyerEmail" name="buyerEmail" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label for="buyerPhone" class="block text-sm font-medium text-gray-700">Buyer Phone Number</label>
+          <input id="buyerPhone" type="tel" [(ngModel)]="soldForm.buyerPhone" name="buyerPhone" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label for="sellingPrice" class="block text-sm font-medium text-gray-700">Selling Price</label>
+          <input id="sellingPrice" type="number" [(ngModel)]="soldForm.sellingPrice" name="sellingPrice" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label for="sellingDate" class="block text-sm font-medium text-gray-700">Selling Date</label>
+          <input id="sellingDate" type="date" [(ngModel)]="soldForm.sellingDate" name="sellingDate" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label for="quantitySold" class="block text-sm font-medium text-gray-700">Quantity Sold</label>
+          <input id="quantitySold" type="number" [(ngModel)]="soldForm.quantitySold" name="quantitySold" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div class="flex justify-end space-x-3 pt-2">
+          <button type="button" (click)="closeSoldForm()"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-all">Cancel</button>
+          <button type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-all">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </div>

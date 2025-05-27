@@ -54,6 +54,7 @@ export class PredictService {
   predictCropDisease(data:any):Observable<any>{
     return this.http.post(`${this.url}/predict-crop-disease`,data)
   }
+
 }
 
 

@@ -24,7 +24,6 @@ export class SellCropComponent implements OnInit {
   constructor(private fb: FormBuilder, private cropService: CropService, private toast: NgToastService,
     private equipmentService: EquipmentService,
     private router: Router,
-
   ) { }
 
   onFileChange(event: any): void {
