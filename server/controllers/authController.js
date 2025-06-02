@@ -177,7 +177,7 @@ class authController {
     }
   };
 
-
+ 
   static saveFcmToken = async (req, res) => {
     try {
       const { fcmtoken } = req.body;

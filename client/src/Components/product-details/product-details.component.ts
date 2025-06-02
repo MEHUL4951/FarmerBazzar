@@ -44,6 +44,8 @@ export class ProductDetailsComponent {
   @ViewChild('ReviewModel') ReviewModel: any;
   product: any;
   data: any;
+  canReview : boolean = false;
+  user: any
   @Input() avgReviews: any;
   loading: boolean = false;
   reviews: any;
@@ -65,10 +67,22 @@ export class ProductDetailsComponent {
   }
 
   ngOnInit(): void {
-    this.isAuthenticated = false;
-    authState(this.auth).subscribe(user => {
+     this.authService.getMe().subscribe(user => {
+      this.user = user;
       this.isAuthenticated = !!user;
+      
+      if (user) {
+        // Check if product is in purchasedProducts array
+        const productId = this.route.snapshot.paramMap.get('id');
+        console.log(productId)
+        console.log(this.user.purchasedProducts)
+        console.log(this.user.uid)
+        this.canReview = this.user.purchasedProducts?.includes(productId!) ?? false;
+      } else {
+        this.canReview = false;
+      }
     });
+
     const id = this.route.snapshot.paramMap.get('id');
     this.fetchProductById(id);
   }
@@ -82,6 +96,7 @@ export class ProductDetailsComponent {
       },
   });
 }
+
   fetchProductById(id: any): void {
     this.loading = true;
     this.cropService.getCropById(id).subscribe({

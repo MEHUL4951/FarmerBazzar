@@ -71,16 +71,11 @@
       </table>
       <div class="my-3">
         <google-map height="280px" width="100%" [center]="center" [zoom]="15" [options]="mapOptions">
-          <map-marker
-         
-          [position]="markerPosition"
-          (mapClick)="openInfoWindow(marker)" 
-          #marker="mapMarker"
-          >
+          <map-marker [position]="markerPosition" (mapClick)="openInfoWindow(marker)" #marker="mapMarker">
           </map-marker>
           <map-info-window #infoWindow>
             <div>
-              <strong>   {{ product?.productName }}</strong><br />
+              <strong> {{ product?.productName }}</strong><br />
               📍{{ product?.sellerAddress }}
             </div>
           </map-info-window>
@@ -94,7 +89,7 @@
       <h3 class="my-3">
         Reviews - <span class="avg-rating">{{ avgReviews?.avg_rating }}</span>/5
         <i class="fa fa-star text-warning"></i>
-        <ng-container *ngIf="!product?.isSold">
+        <ng-container *ngIf="canReview">
           <button (click)="openReviewModal()" class="btn btn-sm btn-primary float-right">Add Review</button>
         </ng-container>
       </h3>
@@ -133,20 +128,25 @@
                 <small>{{ review?.review }}</small>
 
                 <footer class="blockquote-footer my-1">
-                  <!-- {{ review.user }} -->
-                  <cite title="Source Title">
+                  {{user?.firstName }} {{user?.lastName }}
+                  <cite title="Source Title" class="ms-2">
                     <ng-container *ngFor="let star of [].constructor(review?.rating)">
                       <i class="bi bi-star-fill text-warning"></i>
                     </ng-container>
                   </cite>
                 </footer>
+
               </blockquote>
               <hr />
             </ng-container>
           </ng-container>
           <ng-template #noReviews>
-            <p class="no-data">Add First Review</p>
+            <p class="no-data" *ngIf="canReview; else notEligible">Add First Review</p>
+            <ng-template #notEligible>
+              <p class="no-data text-muted">You are not eligible to review this product.</p>
+            </ng-template>
           </ng-template>
+
         </div>
       </div>
 

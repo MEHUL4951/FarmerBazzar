@@ -69,10 +69,13 @@ export class TransactionComponent {
           const products = response.products
           console.log(products)
           this.soldProducts = products.filter((product: any) => product.isSold && product.sellerId === this.userId);
-          this.partialSoldProducts = products.filter((product: any) => !product.isSold && product.productQuantity > 0 && product.sellerId === this.userId);
+          this.partialSoldProducts = products.filter((product: any) => !product.isSold && product.soldQuantity > 0 && product.sellerId === this.userId);
           this.pendingProducts = products.filter((product: any) => !product.isSold && product.soldQuantity == 0 && product.sellerId === this.userId);
           this.boughtProducts = products.filter((product: any) =>  product.buyerIds && product.buyerIds.includes(this.userId) );
-    
+          console.log((this.soldProducts))
+          console.log((this.partialSoldProducts))
+          console.log((this.pendingProducts))
+          console.log((this.boughtProducts))
         }
 
       },

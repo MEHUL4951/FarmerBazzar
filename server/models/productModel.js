@@ -199,7 +199,7 @@ class Product {
 static async getAllProducts() {
   try {
       const productCollection = admin.firestore().collection('products');
-      const snapshot = await productCollection.where('isSold', '==', false).get(); 
+      const snapshot = await productCollection.get(); 
 
       if (snapshot.empty) {
           return [];

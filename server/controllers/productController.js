@@ -274,6 +274,8 @@ class ProductController {
     .where("email", "in", emails)
     .get();
 
+    
+    console.log(buyerSnapshot.docs)
     if (buyerSnapshot.empty) {
       return res.status(404).send("Buyer not found");
     }
@@ -281,7 +283,7 @@ class ProductController {
     const buyerDoc = buyerSnapshot.docs[0];
     console.log(buyerDoc.data())
     const buyerId = buyerDoc.id;
-
+   
     const sellerRef = db.collection("users").doc(product.data.sellerId);
     const buyerRef = db.collection("users").doc(buyerId);
     const productRef = db.collection("products").doc(productId);

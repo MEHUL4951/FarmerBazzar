@@ -18,8 +18,6 @@ export class SidebarComponent implements OnChanges, OnInit {
   defaultAvatar:any = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png';
   @Input() activeSection!: string;
   @Output() sectionChange = new EventEmitter<string>();
-  isSidebarOpen = false;
-
   constructor(private router: Router,
     private authService:AuthService,
     private toast:NgToastService

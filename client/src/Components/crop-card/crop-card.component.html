@@ -1,21 +1,32 @@
 <div class="col-md-10 mb-3 hover-effect">
-<div class="card shadow">
-  <img
-    src="{{product?.productImage}}"
-    class="card-img-top p-3"
-    alt="Crop Image"
-    style="height: 180px; object-fit: cover"
-  />
-  <div class="card-body">
-    <h5 class="card-title mb-3  text-black  fw-bold">{{product?.productName}}</h5>
-    <p class="card-text text-muted mb-1"><i class="bi bi-currency-rupee"></i>
-      {{product?.productPrice}}</p>
-    <p class="card-text text-muted mb-1">
-      <i class="bi bi-geo-alt-fill me-1"></i>{{product?.sellerAddress}}
-    </p>
-    <p class="card-text text-muted">
-      <i class="bi bi-clock-fill me-1"></i>{{ getTimeAgo(product?.createdAt) }}
-    </p>
+  <div class="card shadow position-relative">
+    <!-- Badge on top-right corner -->
+    <span
+      class="badge position-absolute top-0 end-0 m-2"
+      [ngClass]="product?.isSold ? 'badge-sold' : 'badge-available'">
+      {{ product?.isSold ? 'Sold' : 'Available' }}
+    </span>
+
+    <img
+      src="{{ product?.productImage }}"
+      class="card-img-top p-3"
+      alt="Crop Image"
+      style="height: 180px; object-fit: cover"
+    />
+
+    <div class="card-body">
+      <h5 class="card-title mb-3 text-black fw-bold">
+        {{ product?.productName }}
+      </h5>
+      <p class="card-text text-muted mb-1">
+        <i class="bi bi-currency-rupee"></i> {{ product?.productPrice }}
+      </p>
+      <p class="card-text text-muted mb-1">
+        <i class="bi bi-geo-alt-fill me-1"></i> {{ product?.sellerAddress }}
+      </p>
+      <p class="card-text text-muted">
+        <i class="bi bi-clock-fill me-1"></i> {{ getTimeAgo(product?.createdAt) }}
+      </p>
+    </div>
   </div>
-</div>
 </div>
