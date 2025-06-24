@@ -1,72 +1,95 @@
-# 👨‍🌾 FarmerBazaar
+# 👨‍🌾 FarmerBazaar – A Digital Marketplace for Farmers
 
-**FarmerBazaar** is a smart farming platform designed to empower farmers by offering a marketplace to **rent equipment**, **sell crops**, and access **real-time support**. It connects equipment owners with farmers, supports secure payments, and provides a user-friendly dashboard for both parties.
+**FarmerBazaar** is a full-stack web application designed to digitally empower farmers by bridging the gap between crop producers, equipment renters, and buyers. It integrates modern web technologies, AI capabilities, and geospatial tools to provide an intuitive and intelligent agricultural platform.
 
-![FarmerBazaar Screenshot](./screenshots/homepage.png)
+---
+
+## 🔗 GitHub Repository
+
+[👉 View on GitHub](https://github.com/Nana-4gohil/FarmerBazaar)
+
+---
+
+## 🧰 Tech Stack
+
+| Frontend      | Backend           | Database     | APIs / Services                                                                 |
+|---------------|-------------------|--------------|---------------------------------------------------------------------------------|
+| Angular       | Express.js        | Firebase     | Firebase Auth, Firebase Realtime DB, Firebase Cloud Messaging, Redis           |
+|               |                   |              | Gemini AI API (Google PaLM), Leaflet.js, WhatsApp & Phone Dialer Integration   |
 
 ---
 
 ## 🚀 Features
 
-### ✅ Smart Farming Equipment Rental System
-- 🔍 **Search & Filter** (by price, type, location)
-- 📅 **Equipment Availability Calendar**
-- 💳 **Online Booking & Payment Integration** (Razorpay / Stripe)
-- 📡 **GPS Integration** to locate nearby equipment
-- 🔐 **Firebase Authentication** for secure login
-- 📦 **Equipment Insurance Option**
+### 🛒 Crop Marketplace
+- Google & OTP-based login (Firebase Auth)
+- List crops/products with price, images, and details
+- Real-time dashboard with:
+  - Crop insights
+  - Weather overlays
+  - Analytics and trends
 
-### ✅ Real-Time Communication
-- 💬 Chat system between owner & farmer before booking
-- 🔔 Push Notifications using Firebase Cloud Messaging (FCM)
-- 🗂️ Dashboard for both equipment owners and farmers
+### 🧠 AI-Powered Agriculture Assistant
+- 🌾 **Crop Recommendation Engine**
+- 💊 **Fertilizer Suggestions**
+- 🦠 **Crop Disease Prediction**
+- 💬 **Multilingual AI Chat Assistant** (Gemini API)
 
-### ✅ Crop Marketplace
-- 🌾 List crops for sale
-- 🛒 Farmers can browse and buy directly
-- 📷 Upload images of crops/products
+### 🛠️ Equipment Rental System
+- Location-based filtering using Leaflet Maps
+- Book farming equipment by availability
+- Payment gateway integration (Stripe / Razorpay)
+- View availability calendar
+- Owner and farmer dashboards
+- Redis caching for high performance
 
----
-
-## 🛠️ Tech Stack
-
-| Frontend      | Backend          | Database      | APIs & Services            |
-|---------------|------------------|---------------|----------------------------|
-| Angular       | Node.js + Express| Firebase (NoSQL) | Razorpay, Stripe, OpenCage, Firebase Auth, FCM |
+### 🔔 Notifications & Communication
+- Real-time FCM notifications on bookings, sales, or alerts
+- WhatsApp and Dialer integration for direct buyer-seller contact
+- Email verification for secure operations
 
 ---
 
 ## 🔐 Authentication
 
-- Firebase Email & Password Auth
-- Role-based access: `Farmer`, `Owner`, `Admin`
+- Firebase Authentication:
+  - Email & Password
+  - Google Sign-In
+  - OTP-based phone authentication
+- Role-based access (Farmer, Buyer, Equipment Owner)
 
 ---
 
-## 🌐 Live Demo
-
-🚧 Coming soon...  
-(Or add Netlify / Firebase Hosting / Vercel / Railway / Heroku links here)
-
----
-
-## 📦 Installation
+## 📦 Installation Guide
 
 ### Prerequisites
 - Node.js
 - Angular CLI
-- Firebase project
+- Firebase Project Setup
+- Redis Server (optional for local testing)
 
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/FarmerBazaar.git
+git clone https://github.com/your-username/FarmerBazaar.git
 cd FarmerBazaar
-# FarmerBazzar
 
 cd frontend
 npm install
 ng serve
+
 cd backend
 npm install
 npm run dev
+
+# For Linux/macOS
+redis-server
+
+PORT=5000
+FIREBASE_API_KEY=your_firebase_key
+FIREBASE_PROJECT_ID=your_project_id
+GEMINI_API_KEY=your_gemini_key
+RAZORPAY_KEY_ID=your_key_id
+RAZORPAY_KEY_SECRET=your_key_secret
+REDIS_HOST=localhost
+REDIS_PORT=6379
