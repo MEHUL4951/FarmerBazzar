@@ -6,7 +6,7 @@
 
 ## 🔗 GitHub Repository
 
-[👉 View on GitHub](https://github.com/Nana-4gohil/FarmerBazaar)
+[👉 View on GitHub](https://github.com/Nana-4gohil/FarmerBazzar)
 
 ---
 
