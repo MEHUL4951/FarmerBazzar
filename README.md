@@ -71,7 +71,7 @@
 ### Clone the Repository
 
 ```bash
-git clone (https://github.com/Nana-4gohil/FarmerBazzar.git)
+git clone https://github.com/Nana-4gohil/FarmerBazzar.git
 cd FarmerBazaar
 
 cd frontend
