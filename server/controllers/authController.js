@@ -1,14 +1,17 @@
-import admin from '../firebase.js';
-import UserModel from '../models/userModel.js';
+import admin from "../firebase.js";
+import UserModel from "../models/userModel.js";
 const db = admin.firestore();
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import crypto from 'crypto';
-import sendMail from '../utils/mailer.js';
-import { auth } from '../server.js';
-import { getCache, setCache, deleteCache } from '../utils/redisCache.js';
-import { error } from 'console';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import crypto from "crypto";
+import sendMail from "../utils/mailer.js";
+import { auth } from "../server.js";
+import { getCache, setCache, deleteCache } from "../utils/redisCache.js";
+import { error } from "console";
 
 const otpStore = {};
+const MAX_ATTEMPTS = 2;
+const WINDOW_IN_SECONDS = 1800;
+
 const verifyotp = (email, otp) => {
   if (!email || !otp) {
     return { success: false, error: "Email and OTP requires" };
@@ -21,26 +24,54 @@ const verifyotp = (email, otp) => {
   const isOtpExpired = Date.now() - record.createdAt > 10 * 60 * 1000;
   if (isOtpExpired) {
     delete otpStore[email];
-    return { success: false, error: 'OTP expired' };
+    return { success: false, error: "OTP expired" };
   }
   if (!isOtpValid) {
-    return { success: false, error: 'Invalid OTP' };
+    return { success: false, error: "Invalid OTP" };
   }
   delete otpStore[email];
-  return { success: true, message: 'Email verified successfully!' };
+  return { success: true, message: "Email verified successfully!" };
 };
 
 class authController {
   static requestOtp = async (req, res) => {
     const { email } = req.body;
+    const key = `otp_attempts:${email}`;
+    const now = Date.now();
+
     try {
-      const existingUser = await admin.auth().getUserByEmail(email).catch(() => null);
+      const existingUser = await admin
+        .auth()
+        .getUserByEmail(email)
+        .catch(() => null);
       if (existingUser) {
-        return res.status(400).json({ error: 'Email is already taken', success: false });
+        return res
+          .status(400)
+          .json({ error: "Email is already taken", success: false });
       }
       if (!email) {
-        return res.status(400).json({ error: 'Email is required' });
+        return res.status(400).json({ error: "Email is required" });
       }
+
+      let attempts = await getCache(key);
+      if (attempts && attempts.count >= MAX_ATTEMPTS) {
+        const retryIn = Math.ceil((attempts.expiresAt - now) / 1000);
+        return res.status(429).json({
+          error: `Too many OTP requests. Please try again in ${retryIn} seconds.`,
+        });
+      }
+
+      if (!attempts) {
+        attempts = {
+          count: 1,
+          expiresAt: now + WINDOW_IN_SECONDS * 1000,
+        };
+      } else {
+        attempts.count += 1;
+      }
+      const remainingTTL = Math.ceil((attempts.expiresAt - now) / 1000);
+      await setCache(key, attempts, remainingTTL);
+
       const otp = crypto.randomInt(100000, 1000000);
       otpStore[email] = {
         otp,
@@ -48,20 +79,23 @@ class authController {
       };
       console.log(otp);
       try {
-        await sendMail(email, 'Your OTP Code', `Your OTP for FarmerBazzar is ${otp}. Valid for 10 minutes. Ignore  The mail if it is not you`);
-        res.status(200).json({ message: 'OTP sent successfully!' });
+        await sendMail(email, "Your OTP Code", {
+          text: `Your OTP for FarmerBazzar is ${otp}. Valid for 10 minutes. Ignore the mail if it's not you.`,
+        });
+        res.status(200).json({ message: "OTP sent successfully!" });
       } catch (error) {
-        res.status(500).json({ error: 'Failed to send email' });
+        res.status(500).json({ error: "Failed to send email" });
         console.log(error);
       }
     } catch (error) {
-      console.error('Error requesting OTP:', error.message);
-      res.status(500).json({ error: 'Failed to request OTP' });
+      console.error("Error requesting OTP:", error.message);
+      res.status(500).json({ error: "Failed to request OTP" });
     }
   };
 
   static signup = async (req, res) => {
-    const { firstName, lastName, email, phoneNumber, state, password, otp } = req.body;
+    const { firstName, lastName, email, phoneNumber, state, password, otp } =
+      req.body;
     try {
       const otpVerification = verifyotp(email, otp);
       if (!otpVerification.success) {
@@ -74,13 +108,22 @@ class authController {
         displayName: fullName,
       });
       const uid = firebaseUser.uid;
-      const user = new UserModel(uid, firstName, lastName, email, phoneNumber, state);
+      const user = new UserModel(
+        uid,
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        state
+      );
       const result = await user.createUser();
       if (result.success) {
         await deleteCache("all_users");
         return res.status(201).json({ user: result, success: true });
       } else {
-        return res.status(500).json({ error: "Error saving user to Firestore", success: false });
+        return res
+          .status(500)
+          .json({ error: "Error saving user to Firestore", success: false });
       }
     } catch (error) {
       console.error("Signup error:", error.message);
@@ -91,7 +134,11 @@ class authController {
   static login = async (req, res) => {
     try {
       const { email, password } = req.body;
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       if (!userCredential) {
         return res.status(400).json({ error: "Invalid username or password" });
       }
@@ -177,67 +224,64 @@ class authController {
     }
   };
 
- 
   static saveFcmToken = async (req, res) => {
     try {
       const { fcmtoken } = req.body;
 
-      const uid = req.user.uid; // 👈 assuming Firebase Auth is verifying user
+      const uid = req.user.uid; 
 
-      if (!fcmtoken) return res.status(400).json({ error: 'FCM token is required' });
+      if (!fcmtoken)
+        return res.status(400).json({ error: "FCM token is required" });
       await UserModel.updateUserByUID(uid, { fcmToken: fcmtoken });
       await deleteCache(`user_${uid}`);
       await deleteCache(`all_users`);
 
-      return res.status(200).json({ message: 'FCM token saved successfully' });
+      return res.status(200).json({ message: "FCM token saved successfully" });
     } catch (error) {
-      console.error('Error saving FCM token:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      console.error("Error saving FCM token:", error);
+      return res.status(500).json({ error: "Internal server error" });
     }
-  }
+  };
   static savetopicToken = async (req, res) => {
     const { fcmToken, topic } = req.body;
 
     try {
       await admin.messaging().subscribeToTopic(fcmToken, topic);
-      res.status(200).json({ message: 'Subscribed to topic successfully' });
+      res.status(200).json({ message: "Subscribed to topic successfully" });
     } catch (error) {
-      console.error('Subscription Error:', error);
-      res.status(500).json({ error: 'Subscription failed' });
+      console.error("Subscription Error:", error);
+      res.status(500).json({ error: "Subscription failed" });
     }
-  }
+  };
   static firebaseLogin = async (req, res) => {
     const { idToken } = req.body;
     try {
       const user = await admin.auth().verifyIdToken(idToken);
-      const uid = user.uid
-      const email = user.email || 'example@gmail.com'
+      const uid = user.uid;
+      const email = user.email || "example@gmail.com";
       const name = user.name;
-      const phoneNumber = user.phone_number || 1234567890
-      const fullname = name.split(' ');
-      let userDoc = await db.collection('users').doc(uid).get();
-      if(!userDoc.exists){
+      const phoneNumber = user.phone_number || 1234567890;
+      const fullname = name.split(" ");
+      let userDoc = await db.collection("users").doc(uid).get();
+      if (!userDoc.exists) {
         const userData = {
           firstName: fullname[0],
           lastName: fullname[1],
           email,
           phoneNumber,
-          state: 'Gujarat',
+          state: "Gujarat",
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        }
-        await db.collection('users').doc(uid).set(
-          userData
-        )
-
-      }else{
-        res.status(200).js({message:"user is already created..."})
+        };
+        await db.collection("users").doc(uid).set(userData);
+      } else {
+        res.status(200).js({ message: "user is already created..." });
       }
       res.status(200).json({ user });
     } catch (err) {
-      console.error('Firebase ID token verification failed:', err);
-      res.status(401).json({ error:err.error});
+      console.error("Firebase ID token verification failed:", err);
+      res.status(401).json({ error: err.error });
     }
-  }
+  };
 }
 
 export default authController;
